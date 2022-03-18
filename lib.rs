@@ -44,9 +44,9 @@ mod clinical_trial_data {
                    statistical_test: String::from("t-test")}
         }
 
-        // populates records from csv file (access: authorized data collectors, i.e. doctors, nurses)
+        // uploads records from csv file (access: authorized data collectors, i.e. doctors, nurses)
         #[ink(message)]
-        pub fn upload(&mut self) {
+        pub fn upload_raw(&mut self) {
 
             let mut rdr = csv::Reader::from_reader(io::stdin()); // intialize csv reader
             for result in rdr.deserialize() { // iterate with serde's deserialize
@@ -61,9 +61,21 @@ mod clinical_trial_data {
             }
         }
 
+        // downloads raw csv records (access: owner)
+        #[ink(message)]
+        pub fn download_raw(&mut self) {}
+
+        // uploads preprocessed csv records (access: owner)
+        #[ink(message)]
+        pub fn upload_preprocessed(&mut self) {}
+
+        // runs statistical test on data summary 
+        #[ink(message)]
+        pub fn run_stat_test(&mut self) {}
+
         // aggregates records to data summary (access: owner)
         #[ink(message)]
-        pub fn aggregate(&mut self) {
+        pub fn aggregate_data(&mut self) {
 
             let treatment_pos = 0;
             let treatment_neg = 0;
