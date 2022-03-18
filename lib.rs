@@ -3,59 +3,57 @@
 use ink_lang as ink;
 
 #[ink::contract]
-mod clinical_trial {
+mod clinical_trial_data {
 
-    use std::error::Error; // handle errors
+    // use std::error::Error; // handle errors
     use std::io; // input output
-    use std::process; // kill process
     use csv; // parse csv
-
-    // contract state
+    use ink_storage::traits::SpreadAllocate;
+    use ink_storage::Mapping;
 
     #[ink(storage)]
-    pub struct ClinicalTrial {
-        records: Vec<Record>,
-        data_summary: DataSummary,
+    #[derive(SpreadAllocate)]
+    pub struct ClinicalTrialData {
+
+        // data
+        records: Vec<(u32, String, String)>, // Vec[(1, "Treatment", "Positive"), (2, "Placebo", "Negative")]
+        data_summary: ink_storage::Mapping<String, u32>, // {'Treatment Positive': 3, 'Placebo Negative': 358}
+
+        // study characteristics
+        p_value: u32,
+        statistical_test: String,
     }
 
-    // custom types
+    impl ClinicalTrialData {
 
-    type Record = (u32, String, String); // single patient record
-
-    type Records = Vec<Record>; // all patient records
-
-    #[derive(Debug)]
-    pub struct DataSummary { // aggregated patient records
-        treatment_pos: u32,
-        treatment_neg: u32,
-        placebo_pos: u32,
-        placebo_neg: u32,
-    }
-
-    impl ClinicalTrial {
-
-        // contract constructor
-
+        // creates a new clinical_trial_data smart contract initialized to the given values
         #[ink(constructor)] 
-        pub fn new() -> Self {
-            // empty patient records and empty data summary
-            Self { records: Vec::new(), data_summary: DataSummary {treatment_pos:0, treatment_neg:0, placebo_pos:0, placebo_neg:0}}
+        pub fn new(custom_p_value: u32, custom_statistical_test: String) -> Self {
+            Self { records: Vec::new(),
+                   data_summary: Mapping::new(),
+                   p_value: custom_p_value,
+                   statistical_test: custom_statistical_test}
         }
 
-        // contract methods
+        // creates a new clinical_trial_data smart contract initialized to default values
+        #[ink(constructor)]
+        pub fn default() -> Self {
+            Self { records: Vec::new(),
+                   data_summary: Mapping::new(),
+                   p_value: 5,
+                   statistical_test: String::from("t-test")}
+        }
 
+        // populates records from csv file (access: authorized data collectors, i.e. doctors, nurses)
         #[ink(message)]
-        // populates records from csv file
-        pub fn get(&mut self) {
+        pub fn upload(&mut self) {
 
-            let mut records: Records = Vec::new(); // initialize Vector to store
-            let mut rdr = csv::Reader::from_reader(io::stdin()); // intialize reader
-
+            let mut rdr = csv::Reader::from_reader(io::stdin()); // intialize csv reader
             for result in rdr.deserialize() { // iterate with serde's deserialize
 
                 match result {
                     Ok(result) => {
-                        let record: Record = result;
+                        let record: (u32, String, String) = result;
                         self.records.push(record)
                     }
                     Err(e) => return (),
@@ -63,30 +61,38 @@ mod clinical_trial {
             }
         }
 
+        // aggregates records to data summary (access: owner)
         #[ink(message)]
-        // aggregates records to data summary
         pub fn aggregate(&mut self) {
+
+            let treatment_pos = 0;
+            let treatment_neg = 0;
+            let placebo_pos = 0;
+            let placebo_neg = 0;
 
             for patient in self.records.iter() {
 
                 if patient.1 == "Treatment" {
                     if patient.2 == "Yes" {
-                        self.data_summary.treatment_pos += 1;
+                        treatment_pos += 1;
                     } else {
-                        self.data_summary.treatment_neg += 1;
+                        treatment_neg += 1;
                     }
                 } else {
                     if patient.2 == "Yes" {
-                        self.data_summary.placebo_pos += 1; 
+                        placebo_pos += 1; 
                     } else {
-                        self.data_summary.placebo_neg += 1;
+                        placebo_neg += 1;
                     }
                 } 
             }
+
+            self.data_summary.insert(String::from("Treatment Positive"), &treatment_pos);
+            self.data_summary.insert(String::from("Treatment Negative"), &treatment_neg);
+            self.data_summary.insert(String::from("Placebo Positive"), &placebo_pos);
+            self.data_summary.insert(String::from("Placebo Negative"), &placebo_neg);
         }
     }
-
-    // tests
 
     #[cfg(test)]
     mod tests {
@@ -95,11 +101,8 @@ mod clinical_trial {
         use ink_lang as ink; // imports `ink_lang` so we can use `#[ink::test]`
 
         #[ink::test]
-        // test with data.csv
-        fn test_data() {
-            let mut clinical_trial = ClinicalTrial::new();
-            clinical_trial.aggregate();
-            assert_eq!(clinical_trial.data_summary, DataSummary { treatment_pos: 3, treatment_neg: 385, placebo_pos: 28, placebo_neg: 358 });
+        fn test() {
+            // pass
         }
     }
 }
