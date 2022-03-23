@@ -30,7 +30,8 @@ mod clinical_trial_data {
         // creates a new clinical_trial_data smart contract initialized to the given values
         #[ink(constructor)] 
         pub fn new(custom_p_value: u32, custom_statistical_test: String) -> Self {
-            Self { records: Vec::new(),
+            Self { raw_records: Vec::new(),
+                   preprocessed_records: Vec::new(),
                    data_summary: Mapping::new(),
                    p_value: custom_p_value,
                    statistical_test: custom_statistical_test}
@@ -39,7 +40,8 @@ mod clinical_trial_data {
         // creates a new clinical_trial_data smart contract initialized to default values
         #[ink(constructor)]
         pub fn default() -> Self {
-            Self { records: Vec::new(),
+            Self { raw_records: Vec::new(),
+                   preprocessed_records: Vec::new(),
                    data_summary: Mapping::new(),
                    p_value: 5,
                    statistical_test: String::from("t-test")}
@@ -54,8 +56,8 @@ mod clinical_trial_data {
 
                 match result {
                     Ok(result) => {
-                        let record: (u32, String, String) = result;
-                        self.records.push(record)
+                        let raw_record: (u32, String, String) = result;
+                        self.raw_records.push(raw_record)
                     }
                     Err(e) => println!("Failed to upload CSV", e),
                 };
@@ -99,7 +101,7 @@ mod clinical_trial_data {
             let placebo_pos = 0;
             let placebo_neg = 0;
 
-            for patient in self.records.iter() {
+            for patient in self.preprocessed_records.iter() {
 
                 if patient.1 == "Treatment" {
                     if patient.2 == "Yes" {
