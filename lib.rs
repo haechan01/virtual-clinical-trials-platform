@@ -16,7 +16,8 @@ mod clinical_trial_data {
     pub struct ClinicalTrialData {
 
         // data
-        records: Vec<(u32, String, String)>, // Vec[(1, "Treatment", "Positive"), (2, "Placebo", "Negative")]
+        raw_records: Vec<(u32, String, String)>, // Vec[(1, "Treatment", "Positive"), (2, "Placebo", "Negative")]
+        preprocessed_records: Vec<(u32, String, String)>, // Vec[(1, "Treatment", "Positive"), (2, "Placebo", "Negative")]
         data_summary: ink_storage::Mapping<String, u32>, // {'Treatment Positive': 3, 'Placebo Negative': 358}
 
         // study characteristics
@@ -56,26 +57,42 @@ mod clinical_trial_data {
                         let record: (u32, String, String) = result;
                         self.records.push(record)
                     }
-                    Err(e) => return (),
+                    Err(e) => println!("Failed to upload CSV", e),
                 };
             }
         }
 
         // downloads raw csv records (access: owner)
         #[ink(message)]
-        pub fn download_raw(&mut self) {}
+        pub fn download_raw(&mut self) {
+            // 1. pull all entries in self.raw_records
+            // 2. convert into csv
+            // 3. return csv
+        }
 
         // uploads preprocessed csv records (access: owner)
         #[ink(message)]
-        pub fn upload_preprocessed(&mut self) {}
+        pub fn upload_preprocessed(&mut self) {
+            // 1. reads csv
+            // 2. iterate 
+            // 3. push all entries into self.preprocessed_records
+            // 4. aggregate data to self.data_summary, i.e. call aggregate_data()
+            // 5. run statistical test, i.e. call run_stat_test()
+            // 6. return statistical test results.
+        }
 
         // runs statistical test on data summary 
-        #[ink(message)]
-        pub fn run_stat_test(&mut self) {}
+        fn run_stat_test(&mut self) {
+            // 1. reads self.data_summary
+            // 2. calculates results
+            // 3. return results
+        }
 
-        // aggregates records to data summary (access: owner)
-        #[ink(message)]
-        pub fn aggregate_data(&mut self) {
+        // aggregates preprocessed records to data summary (access: owner)
+        fn aggregate_data(&mut self) {
+            // 1. read self.preprocessed_records
+            // 2. iterate
+            // 3. count into self.data_summary
 
             let treatment_pos = 0;
             let treatment_neg = 0;
