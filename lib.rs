@@ -86,7 +86,7 @@ mod clinical_trial_data {
         // runs statistical test on data summary 
         fn run_stat_test(&mut self) {
             // 1. reads self.data_summary
-            // 2. calculates results
+            // 2. use hypergeometric distribution to calculates the pdf
             // 3. return results
         }
 
