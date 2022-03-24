@@ -5,11 +5,13 @@ use ink_lang as ink;
 #[ink::contract]
 mod clinical_trial_data {
 
-    // use std::error::Error; // handle errors
-    use std::io; // input output
-    use csv; // parse csv
-    use ink_storage::traits::SpreadAllocate;
+    // use std::error::Error;
+    use std::io;
+    use csv;
     use ink_storage::Mapping;
+    use ink_prelude::string::String; 
+    use ink_prelude::vec::Vec;
+    use ink_storage::traits::SpreadAllocate;
 
     #[ink(storage)]
     #[derive(SpreadAllocate)]
@@ -18,33 +20,45 @@ mod clinical_trial_data {
         // data
         raw_records: Vec<(u32, String, String)>, // Vec[(1, "Treatment", "Positive"), (2, "Placebo", "Negative")]
         preprocessed_records: Vec<(u32, String, String)>, // Vec[(1, "Treatment", "Positive"), (2, "Placebo", "Negative")]
-        data_summary: ink_storage::Mapping<String, u32>, // {'Treatment Positive': 3, 'Placebo Negative': 358}
+        data_summary: Mapping<String, u32>, // {'Treatment Positive': 3, 'Placebo Negative': 358}
 
         // study characteristics
-        p_value: u32,
-        statistical_test: String,
+        p_value: u32, // i.e. ink doesn't allow for float
+        stat_test: String, // i.e. fishers_exact_test        
     }
 
     impl ClinicalTrialData {
 
         // creates a new clinical_trial_data smart contract initialized to the given values
         #[ink(constructor)] 
-        pub fn new(custom_p_value: u32, custom_statistical_test: String) -> Self {
-            Self { raw_records: Vec::new(),
-                   preprocessed_records: Vec::new(),
-                   data_summary: Mapping::new(),
-                   p_value: custom_p_value,
-                   statistical_test: custom_statistical_test}
+        pub fn new(custom_p_value: u32, custom_stat_test: String) -> Self {
+
+            ink_lang::utils::initialize_contract(|contract: &mut Self| {
+                contract.p_value = custom_p_value;
+                contract.stat_test = custom_stat_test;
+            })
         }
 
         // creates a new clinical_trial_data smart contract initialized to default values
         #[ink(constructor)]
         pub fn default() -> Self {
-            Self { raw_records: Vec::new(),
-                   preprocessed_records: Vec::new(),
-                   data_summary: Mapping::new(),
-                   p_value: 5,
-                   statistical_test: String::from("t-test")}
+
+            ink_lang::utils::initialize_contract(|contract: &mut Self| {
+                contract.p_value = 5;
+                contract.stat_test = String::from("fishers_exact_test");
+            })
+        }
+
+        #[ink(message)]
+        pub fn get_p_value(&self) -> u32 {
+            ink_env::debug_println!("p-value for this clinical trial is: {}", self.p_value);
+            self.p_value
+        }
+
+        #[ink(message)]
+        pub fn get_stat_test(&self) -> String {
+            ink_env::debug_println!("statistical test for this clinical trial is {}", self.stat_test);
+            self.stat_test.clone()
         }
 
         // uploads records from csv file (access: authorized data collectors, i.e. doctors, nurses)
@@ -86,7 +100,7 @@ mod clinical_trial_data {
         // runs statistical test on data summary 
         fn run_stat_test(&mut self) {
             // 1. reads self.data_summary
-            // 2. use hypergeometric distribution to calculates the pdf
+            // 2. calculates results
             // 3. return results
         }
 
@@ -101,7 +115,7 @@ mod clinical_trial_data {
             let placebo_pos = 0;
             let placebo_neg = 0;
 
-            for patient in self.preprocessed_records.iter() {
+            for patient in self.preprocessed_   records.iter() {
 
                 if patient.1 == "Treatment" {
                     if patient.2 == "Yes" {
@@ -132,8 +146,16 @@ mod clinical_trial_data {
         use ink_lang as ink; // imports `ink_lang` so we can use `#[ink::test]`
 
         #[ink::test]
-        fn test() {
-            // pass
+        fn default_init() {
+            let research = ClinicalTrialData::default();
+            assert!(research.get_p_value() == 5 && research.get_stat_test() == String::from("fishers_exact_test"));
+
+        }
+
+        #[ink::test]
+        fn new_init() {
+            let research = ClinicalTrialData::new(2, String::from("t_test"));
+            assert!(research.get_p_value() == 2 && research.get_stat_test() == String::from("t_test"));
         }
     }
 }
