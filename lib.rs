@@ -115,7 +115,7 @@ mod clinical_trial_data {
             let placebo_pos = 0;
             let placebo_neg = 0;
 
-            for patient in self.preprocessed_   records.iter() {
+            for patient in self.preprocessed_records.iter() {
 
                 if patient.1 == "Treatment" {
                     if patient.2 == "Yes" {
