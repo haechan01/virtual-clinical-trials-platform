@@ -87,6 +87,7 @@ mod clinical_trial_data {
         }
 
         // aggregates preprocessed records to data summary (access: owner)
+        #[ink(message)]
         fn aggregate_data(&mut self) {
 
             // 1. initiazlie variables
@@ -121,6 +122,7 @@ mod clinical_trial_data {
         }
 
         // runs statistical test on data summary 
+        #[ink(message)]
         fn run_stat_test(&self) -> bool {
 
             // 1. read self.data_summary
