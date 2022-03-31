@@ -1,8 +1,28 @@
 import React from 'react'
+import {useState} from 'react'
 import { useFormik } from 'formik'
 import './Form.css';
+import Papa from 'papaparse';
 
 export default function Form() {
+
+    function handleCSV(file, fileType) {
+        console.log(file)
+        var csv = Papa.parse(file, {
+            header: false,
+            dynamicTyping: true,
+            complete: function (results) {
+                var data = results.data;
+                
+                if (fileType === "raw"){
+                    formik.values.file = data
+                } else {
+                    formik.values.file_preprocessed = data
+                }
+   
+            }
+        });
+    }
 
     const formik = useFormik({
         initialValues:{
@@ -13,9 +33,11 @@ export default function Form() {
             file_preprocessed: ""
         },
         onSubmit: (values) => {
-            console.log(values)
+            
         }
     })
+
+
 
   return (
     <div className="container">
@@ -24,12 +46,16 @@ export default function Form() {
             Upload Raw Data
 
     <div className='file-upload'>
-        <input id="file" name="file" type="file" className="upload-field" onChange={formik.handleChange} />
+        <input id="file" name="file" type="file" className="upload-field" onChange={(event) => {
+  handleCSV(event.currentTarget.files[0], "raw");
+}} />
         </div>
         Upload Preprocessed Data
 
 <div className='file-upload'>
-    <input id="file_preprocessed" name="file_preprocessed" type="file" className="upload-field" onChange={formik.handleChange} />
+    <input id="file_preprocessed" name="file_preprocessed" type="file" className="upload-field" onChange={(event) => {
+  handleCSV(event.currentTarget.files[0], "processed");
+}} />
     </div>
             Give your clinical trial a name
 
