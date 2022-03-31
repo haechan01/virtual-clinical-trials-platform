@@ -7,8 +7,8 @@ import { Button } from 'baseui/button'
 import { ButtonGroup } from 'baseui/button-group'
 import { toaster } from 'baseui/toast'
 import { useAtom } from 'jotai'
-import accountAtom from '../atoms/account'
-import { getSigner } from '../lib/polkadotExtension'
+import accountAtom from './atoms/account'
+import { getSigner } from './lib/polkadotExtension'
 
 import { useState } from 'react'
 import { useFormik } from 'formik'
@@ -38,7 +38,7 @@ export default async function Form() {
 
     // imported Polkadot Api
     const wsProvider = new WsProvider('ws://localhost:9944'); // local test net
-    const api = new ApiPromise({
+    const api = await create ApiPromise({
         provider: wsProvider,
         types
     });
