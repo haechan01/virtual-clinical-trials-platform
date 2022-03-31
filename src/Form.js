@@ -15,7 +15,7 @@ import { useFormik } from 'formik'
 import './Form.css';
 import Papa from 'papaparse';
 
-export default function Form() {
+export default async function Form() {
 
     function handleCSV(file, fileType) {
         console.log(file)
@@ -36,11 +36,9 @@ export default function Form() {
         });
     }
 
-
-
     // imported Polkadot Api
     const wsProvider = new WsProvider('ws://localhost:9944'); // local test net
-    const api = await ApiPromise.create({
+    const api = new ApiPromise({
         provider: wsProvider,
         types
     });
@@ -48,7 +46,7 @@ export default function Form() {
     // Create a contract object with the metadata and the contract id.
     const pruntimeURL = 'http://127.0.0.1:8000';  // assuming the default port
     const contractId = '0xa5ef1d6cb746b21a481c937870ba491d6fe120747bbeb5304c17de132e8d0392';  // your contract id
-    const metadata = /* load the metadata.json... */;
+    const metadata = require('./metadata.json');
     const contract = new ContractPromise(
         await create({ api, baseURL: pruntimeURL, contractId }), // Phala's "create" decorator
         JSON.parse(metadata),
@@ -65,7 +63,7 @@ export default function Form() {
         },
 
         // what happens when user submits the form
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
 
             // try {
             //     // initialize contract 
@@ -80,7 +78,8 @@ export default function Form() {
             try {
                 // upload raw
                 const received_p = await contract.get_p_value({});
-                console.log("received from blockchain: %s", received_p);
+                console.log("user p: %d", values.pValueThresh)
+                console.log("received from blockchain: %", received_p);
             }
             catch (e) {
                 console.log(e)
