@@ -1,5 +1,5 @@
 import React from 'react';
-import { createApi } from './lib/polkadotApi';
+import { createApi } from './lib/polkadotApi.ts';
 import { ContractPromise } from '@polkadot/api-contract';
 // import { useEffect, useState } from 'react'
 import { create, signCertificate, CertificateData } from '@phala/sdk';
@@ -7,8 +7,8 @@ import { Button } from 'baseui/button';
 import { ButtonGroup } from 'baseui/button-group';
 import { toaster } from 'baseui/toast';
 import { useAtom } from 'jotai';
-import accountAtom from './atoms/account';
-import { getSigner } from './lib/polkadotExtension';
+import accountAtom from './atoms/account.ts';
+import { getSigner } from './lib/polkadotExtension.ts';
 
 import { useState } from 'react';
 import { useFormik } from 'formik';
