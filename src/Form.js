@@ -95,7 +95,7 @@ export default async function Form() {
 
         Upload Raw Data
 
-        <div className = 'file-upload' >
+        < div className = 'file-upload' >
         <
         input id = "file"
         name = "file"
@@ -109,8 +109,7 @@ export default async function Form() {
         </div>
         Upload Preprocessed Data
 
-        <
-        div className = 'file-upload' >
+        < div className = 'file-upload' >
         <
         input id = "file_preprocessed"
         name = "file_preprocessed"
@@ -124,8 +123,7 @@ export default async function Form() {
         </div>
         Give your clinical trial a name
 
-        <
-        div className = "input-block" >
+        < div className = "input-block" >
         <
         input className = "input-field"
         id = 'trialName'
@@ -133,20 +131,19 @@ export default async function Form() {
         type = 'text'
         placeholder = "Trial Name"
         onChange = { formik.handleChange }
-        value = { formik.values.trialName }
-        />   
+        value = { formik.values.trialName } />   
         </div>
         Choose the type of test
 
-        <
-        div className = "input-block-radios" >
+        < div className = "input-block-radios" >
         <
         input id = 'testType'
         name = 'testType'
         type = 'radio'
         onChange = { formik.handleChange }
-        value = "fishers_exact_test" / >
-        Fisher 's Exact Test   <
+        value = "fishers_exact_test"/>
+        Fisher 's Exact Test   
+        <
         input id = 'testType'
         name = 'testType'
         type = 'radio'
