@@ -107,8 +107,8 @@ export default async function Form() {
                 handleCSV(event.currentTarget.files[0], "raw");
             }
         }
-        />  <
-        /div>
+        />  < /
+        div >
         Upload Preprocessed Data
 
         <
@@ -123,8 +123,8 @@ export default async function Form() {
                 handleCSV(event.currentTarget.files[0], "processed");
             }
         }
-        /> <
-        /div >
+        /> < /
+        div >
         Give your clinical trial a name
 
         <
@@ -137,8 +137,8 @@ export default async function Form() {
         placeholder = "Trial Name"
         onChange = { formik.handleChange }
         value = { formik.values.trialName }
-        />   <
-        /div>
+        />   < /
+        div >
         Choose the type of test
 
         <
@@ -170,8 +170,8 @@ export default async function Form() {
         placeholder = "0.05"
         onChange = { formik.handleChange }
         value = { formik.values.pValueThresh }
-        /> <
-        /div>
+        /> < /
+        div >
 
         <
         button type = 'submit'
@@ -181,7 +181,7 @@ export default async function Form() {
         /button>
 
         <
-        /form> <
-        /div>
+        /form> < /
+        div >
     )
 }
