@@ -49,6 +49,13 @@ export default async function Form() {
         JSON.parse(metadata),
         contractId
     );
+    const [account] = useAtom(accountAtom);
+    const signer = await getSigner(account);
+    const certificateData = await signCertificate({
+        api,
+        account,
+        signer,
+    })
 
     const formik = useFormik({
         initialValues: {
@@ -59,27 +66,58 @@ export default async function Form() {
             file_preprocessed: ""
         },
 
+        validate: (values) => {
+            const errors = {};
+            if (!values.trialName) {
+                errors.trialName = 'Required';
+            } else if (!/^[A-Z0-9]$/i.test(values.trialName)) {
+                errors.trialName = 'Invalid Trial Name type';
+            }
+            if (!values.testType) {
+                errors.testType = 'Required';
+            }
+            if (!values.file_preprocessed) {
+                errors.file_preprocessed = 'Required';
+            }
+            return errors;
+        },
+
         // what happens when user submits the form
         onSubmit: async(values) => {
 
-            // try {
-            //     // initialize contract 
-            //     await contract.tx.default({})
-            //         .signAndSend(address, { signer }); // injected signer object from polkadot extension??
-            //     console.log("instantiate succeeded")
-            // }
-            // catch (e) {
-            //     console.log(e)
-            // }
-
             try {
-                // upload raw
-                const received_p = await contract.get_p_value({});
+                // initialize contract 
+                await contract.tx.default({})
+                    .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
+                console.log("instantiate succeeded");
+            } catch (e) {
+                console.log(e);
+            }
+            try {
+                // set data conditions
+                await contract.tx.new({}, values.pValueThresh * 100, values.testType)
+                    .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
+                console.log("Property Upload succeeded");
+            } catch (e) {
+                console.log(e);
+            }
+            try {
+                // upload preprocessed data
+                await contract.tx.upload_preprocessed({}, values.file_preprocessed)
+                    .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
+                console.log("Data upload succeeded");
+            } catch (e) {
+                console.log(e);
+            }
+            try {
+                // obtain p_value
+                const received_p = await contract.query.get_p_value(certificateData, {});
                 console.log("user p: %d", values.pValueThresh);
                 console.log("received from blockchain: %", received_p);
             } catch (e) {
                 console.log(e);
             }
+
         }
     });
 
@@ -95,7 +133,8 @@ export default async function Form() {
 
         Upload Raw Data
 
-        < div className = 'file-upload' >
+        <
+        div className = 'file-upload' >
         <
         input id = "file"
         name = "file"
@@ -105,11 +144,13 @@ export default async function Form() {
             (event) => {
                 handleCSV(event.currentTarget.files[0], "raw");
             }
-        }/> 
-        </div>
+        }
+        />  < /
+        div >
         Upload Preprocessed Data
 
-        < div className = 'file-upload' >
+        <
+        div className = 'file-upload' >
         <
         input id = "file_preprocessed"
         name = "file_preprocessed"
@@ -119,11 +160,13 @@ export default async function Form() {
             (event) => {
                 handleCSV(event.currentTarget.files[0], "processed");
             }
-        }/> 
-        </div>
+        }
+        />  < /
+        div >
         Give your clinical trial a name
 
-        < div className = "input-block" >
+        <
+        div className = "input-block" >
         <
         input className = "input-field"
         id = 'trialName'
@@ -131,30 +174,32 @@ export default async function Form() {
         type = 'text'
         placeholder = "Trial Name"
         onChange = { formik.handleChange }
-        value = { formik.values.trialName } />   
-        </div>
+        value = { formik.values.trialName }
+        />    < /
+        div >
         Choose the type of test
 
-        < div className = "input-block-radios" >
+        <
+        div className = "input-block-radios" >
         <
         input id = 'testType'
         name = 'testType'
         type = 'radio'
         onChange = { formik.handleChange }
-        value = "fishers_exact_test"/>
-        Fisher 's Exact Test   
-        <
+        value = "fishers_exact_test" / >
+        Fisher 's Exact Test    <
         input id = 'testType'
         name = 'testType'
         type = 'radio'
         onChange = { formik.handleChange }
-        value = "meandiff" />
-        Difference of Means Test 
-        </div>
+        value = "meandiff" / >
+        Difference of Means Test <
+        /div>
 
         Choose the significance level threshold
 
-        < div className = "input-block" >
+        <
+        div className = "input-block" >
         <
         input className = "input-field"
         id = 'pValueThresh'
@@ -162,17 +207,19 @@ export default async function Form() {
         type = 'number'
         placeholder = "0.05"
         onChange = { formik.handleChange }
-        value = { formik.values.pValueThresh }/> 
-        </div>
+        value = { formik.values.pValueThresh }
+        />  < /
+        div >
 
         <
         button type = 'submit'
         className = "button"
         onSubmit = { formik.onSubmit } >
-        Submit 
-        </button>
+        Submit <
+        /button>
 
-        </form> 
-        </div >
+        <
+        /form>  < /
+        div >
     )
 }
