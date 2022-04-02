@@ -2,15 +2,10 @@ import React from 'react';
 import { createApi } from './lib/polkadotApi.ts';
 import { ContractPromise } from '@polkadot/api-contract';
 // import { useEffect, useState } from 'react'
-import { create, signCertificate, CertificateData } from '@phala/sdk';
-import { Button } from 'baseui/button';
-import { ButtonGroup } from 'baseui/button-group';
-import { toaster } from 'baseui/toast';
+import { create, signCertificate, } from '@phala/sdk';
 import { useAtom } from 'jotai';
 import accountAtom from './atoms/account.ts';
 import { getSigner } from './lib/polkadotExtension.ts';
-
-import { useState } from 'react';
 import { useFormik } from 'formik';
 import './Form.css';
 import Papa from 'papaparse';
@@ -19,7 +14,7 @@ export default async function Form() {
 
     function handleCSV(file, fileType) {
         console.log(file)
-        var csv = Papa.parse(file, {
+        Papa.parse(file, {
             header: false,
             dynamicTyping: true,
             complete: function(results) {
@@ -55,7 +50,7 @@ export default async function Form() {
         api,
         account,
         signer,
-    })
+    });
 
     const formik = useFormik({
         initialValues: {
@@ -143,7 +138,8 @@ export default async function Form() {
 
         Upload Raw Data
 
-        < div className = 'file-upload' >
+        <
+        div className = 'file-upload' >
         <
         input id = "file"
         name = "file"
@@ -153,11 +149,13 @@ export default async function Form() {
             (event) => {
                 handleCSV(event.currentTarget.files[0], "raw");
             }
-        }/>  
-        < /div >
+        }
+        />   <
+        /div>
         Upload Preprocessed Data
 
-        < div className = 'file-upload' >
+        <
+        div className = 'file-upload' >
         <
         input id = "file_preprocessed"
         name = "file_preprocessed"
@@ -167,11 +165,13 @@ export default async function Form() {
             (event) => {
                 handleCSV(event.currentTarget.files[0], "processed");
             }
-        }/>  
-        < /div >
+        }
+        />   <
+        /div>
         Give your clinical trial a name
 
-        < div className = "input-block" >
+        <
+        div className = "input-block" >
         <
         input className = "input-field"
         id = 'trialName'
@@ -179,32 +179,35 @@ export default async function Form() {
         type = 'text'
         placeholder = "Trial Name"
         onChange = { formik.handleChange }
-        value = { formik.values.trialName }/>    
-        < /div >
+        value = { formik.values.trialName }
+        />     <
+        /div>
         Choose the type of test
 
-        < div className = "input-block-radios" >
+        <
+        div className = "input-block-radios" >
         <
         input id = 'testType'
         name = 'testType'
         type = 'radio'
         onChange = { formik.handleChange }
-        value = "fishers_exact_test" />
-            
-        Fisher's Exact Test    
-        
+        value = "fishers_exact_test" / >
+
+        Fisher 's Exact Test    
+
         <
         input id = 'testType'
         name = 'testType'
         type = 'radio'
         onChange = { formik.handleChange }
-        value = "meandiff" />
-        Difference of Means Test 
-        </div>
+        value = "meandiff" / >
+        Difference of Means Test <
+        /div>
 
         Choose the significance level threshold
 
-        < div className = "input-block" >
+        <
+        div className = "input-block" >
         <
         input className = "input-field"
         id = 'pValueThresh'
@@ -212,17 +215,19 @@ export default async function Form() {
         type = 'number'
         placeholder = "0.05"
         onChange = { formik.handleChange }
-        value = { formik.values.pValueThresh }/> 
-        </div >
+        value = { formik.values.pValueThresh }
+        />  <
+        /div>
 
         <
         button type = 'submit'
         className = "button"
-        onSubmit = { formik.onSubmit }>
-        Submit 
-        </button>
+        onSubmit = { formik.onSubmit } >
+        Submit <
+        /button>
 
-        </form>
-        </div >
+        <
+        /form> <
+        /div>
     )
 }
