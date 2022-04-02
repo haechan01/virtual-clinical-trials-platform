@@ -158,6 +158,11 @@ mod clinical_trial_data {
                 self.result = true;
             }
         }
+
+        #[ink(message)]
+        pub fn get_result(&self) {
+            self.result
+        }
     }
 
     #[cfg(test)]

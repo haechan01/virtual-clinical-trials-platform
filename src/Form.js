@@ -117,7 +117,17 @@ export default async function Form() {
             } catch (e) {
                 console.log(e);
             }
-
+            try {
+                // obtain stat_test results
+                const received_p = await contract.query.get_result(certificateData, {});
+                if (received_p) {
+                    console.log("We have sufficient information to reject the null hypothesis for %", values.trialName);
+                } else {
+                    console.log("We do not have sufficient information to reject the null hypothesis for %", values.trialName)
+                }
+            } catch (e) {
+                console.log(e);
+            }
         }
     });
 
