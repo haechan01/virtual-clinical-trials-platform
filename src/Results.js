@@ -31,20 +31,16 @@ export default async function Results() {
 
 
 
-    return ( <
-        div > {
-            message ? < div >
-            <
-            h1 > Results
-            for { trial_name } < /h1> <
-            div className = 'results-container' >
-            <
-            div className = 'item' > The result on the chained data was : { message } < /div> <
-            /div> <
-            /div> : <div> You have not uploaded your trial data yet, click on "New trial" to get started </div >
+    return (<div> 
+            {message ? 
+             <div>
+                <h1> Results for { trial_name } </h1>
+                <div className = 'results-container' >
+                    <div className = 'item' > The result on the chained data was : { message }</div> 
+                </div>
+            </div> : 
+            <div> You have not uploaded your trial data yet, click on "New trial" to get started </div >
         }
-
-        <
-        /div>
+        </div>
     )
 }
