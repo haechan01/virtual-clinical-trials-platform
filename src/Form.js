@@ -10,6 +10,21 @@ import { useFormik } from 'formik';
 import './Form.css';
 import Papa from 'papaparse';
 
+// imported Polkadot Api
+export const endpoint = 'ws://localhost:9944';
+export const api = createApi(endpoint);
+
+// Create a contract object with the metadata and the contract id.
+const pruntimeURL = 'http://127.0.0.1:8000'; // assuming the default port
+const contractId = '0xa5ef1d6cb746b21a481c937870ba491d6fe120747bbeb5304c17de132e8d0392'; // your contract id
+const metadata = require('./metadata.json');
+export const contract = new ContractPromise(
+    await create({ api, pruntimeURL, contractId }), // Phala's "create" decorator
+    JSON.parse(metadata),
+    contractId
+);
+export var trial_name = "";
+
 export default async function Form() {
 
     function handleCSV(file, fileType) {
@@ -30,19 +45,6 @@ export default async function Form() {
         });
     }
 
-    // imported Polkadot Api
-    const endpoint = 'ws://localhost:9944';
-    const api = createApi(endpoint);
-
-    // Create a contract object with the metadata and the contract id.
-    const pruntimeURL = 'http://127.0.0.1:8000'; // assuming the default port
-    const contractId = '0xa5ef1d6cb746b21a481c937870ba491d6fe120747bbeb5304c17de132e8d0392'; // your contract id
-    const metadata = require('./metadata.json');
-    const contract = new ContractPromise(
-        await create({ api, pruntimeURL, contractId }), // Phala's "create" decorator
-        JSON.parse(metadata),
-        contractId
-    );
     const [account] = useAtom(accountAtom);
     const signer = await getSigner(account);
     const certificateData = await signCertificate({
@@ -78,6 +80,7 @@ export default async function Form() {
 
         // what happens when user submits the form
         onSubmit: async(values) => {
+            trial_name = values.trialName;
 
             try {
                 // initialize contract 
@@ -111,17 +114,6 @@ export default async function Form() {
             } catch (e) {
                 console.log(e);
             }
-            try {
-                // obtain stat_test results
-                const received_p = await contract.query.get_result(certificateData, {});
-                if (received_p) {
-                    console.log("We have sufficient information to reject the null hypothesis for %", values.trialName);
-                } else {
-                    console.log("We do not have sufficient information to reject the null hypothesis for %", values.trialName);
-                }
-            } catch (e) {
-                console.log(e);
-            }
         }
     });
 
@@ -133,11 +125,12 @@ export default async function Form() {
         div className = "container" >
         <
         form onSubmit = { formik.handleSubmit }
-        className = "form-container">
+        className = "form-container" >
 
         Upload Raw Data
 
-        <div className = 'file-upload' >
+        <
+        div className = 'file-upload' >
         <
         input id = "file"
         name = "file"
@@ -147,11 +140,13 @@ export default async function Form() {
             (event) => {
                 handleCSV(event.currentTarget.files[0], "raw");
             }
-        }/>
-        </div>
+        }
+        /> <
+        /div>
         Upload Preprocessed Data
 
-        <div className = 'file-upload' >
+        <
+        div className = 'file-upload' >
         <
         input id = "file_preprocessed"
         name = "file_preprocessed"
@@ -161,11 +156,13 @@ export default async function Form() {
             (event) => {
                 handleCSV(event.currentTarget.files[0], "processed");
             }
-        }/>
-        </div>
+        }
+        /> <
+        /div>
         Give your clinical trial a name
 
-        <div className = "input-block" >
+        <
+        div className = "input-block" >
         <
         input className = "input-field"
         id = 'trialName'
@@ -173,32 +170,35 @@ export default async function Form() {
         type = 'text'
         placeholder = "Trial Name"
         onChange = { formik.handleChange }
-        value = { formik.values.trialName } />
-        </div>
+        value = { formik.values.trialName }
+        /> <
+        /div>
         Choose the type of test
 
-        <div className = "input-block-radios" >
+        <
+        div className = "input-block-radios" >
         <
         input id = 'testType'
         name = 'testType'
         type = 'radio'
         onChange = { formik.handleChange }
-        value = "fishers_exact_test" />
+        value = "fishers_exact_test" / >
 
-        Fisher's Exact Test    
+        Fisher 's Exact Test    
 
         <
         input id = 'testType'
         name = 'testType'
         type = 'radio'
         onChange = { formik.handleChange }
-        value = "meandiff" />
-        Difference of Means Test
-        </div>
+        value = "meandiff" / >
+        Difference of Means Test <
+        /div>
 
         Choose the significance level threshold
 
-        <div className = "input-block" >
+        <
+        div className = "input-block" >
         <
         input className = "input-field"
         id = 'pValueThresh'
@@ -206,17 +206,19 @@ export default async function Form() {
         type = 'number'
         placeholder = "0.05"
         onChange = { formik.handleChange }
-        value = { formik.values.pValueThresh }/>
-        </div>
+        value = { formik.values.pValueThresh }
+        /> <
+        /div>
 
         <
         button type = 'submit'
         className = "button"
         onSubmit = { formik.onSubmit } >
-        Submit
-        </button>
+        Submit <
+        /button>
 
-        </form>
-        </div>
+        <
+        /form> <
+        /div>
     )
 }
