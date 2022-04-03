@@ -123,15 +123,13 @@ export default async function Form() {
 
     return (
         <div className = "container">
-        <
-        form onSubmit = { formik.handleSubmit }
+        <form onSubmit = { formik.handleSubmit }
         className = "form-container">
 
         Upload Raw Data
 
         <div className = 'file-upload'>
-        <
-        input id = "file"
+        <input id = "file"
         name = "file"
         type = "file"
         className = "upload-field"
@@ -144,8 +142,7 @@ export default async function Form() {
         Upload Preprocessed Data
 
         <div className = 'file-upload'>
-        <
-        input id = "file_preprocessed"
+        <input id = "file_preprocessed"
         name = "file_preprocessed"
         type = "file"
         className = "upload-field"
@@ -158,8 +155,7 @@ export default async function Form() {
         Give your clinical trial a name
 
         <div className = "input-block">
-        <
-        input className = "input-field"
+        <input className = "input-field"
         id = 'trialName'
         name = 'trialName'
         type = 'text'
@@ -170,8 +166,7 @@ export default async function Form() {
         Choose the type of test
 
         <div className = "input-block-radios">
-        <
-        input id = 'testType'
+        <input id = 'testType'
         name = 'testType'
         type = 'radio'
         onChange = { formik.handleChange }
@@ -179,8 +174,7 @@ export default async function Form() {
 
         Fisher 's Exact Test    
 
-        <
-        input id = 'testType'
+        <input id = 'testType'
         name = 'testType'
         type = 'radio'
         onChange = { formik.handleChange }
@@ -191,8 +185,7 @@ export default async function Form() {
         Choose the significance level threshold
 
         <div className = "input-block">
-        <
-        input className = "input-field"
+        <input className = "input-field"
         id = 'pValueThresh'
         name = 'pValueThresh'
         type = 'number'
@@ -201,8 +194,7 @@ export default async function Form() {
         value = { formik.values.pValueThresh }/>
         </div>
 
-        <
-        button type = 'submit'
+        <button type = 'submit'
         className = "button"
         onSubmit = { formik.onSubmit }>
         Submit
