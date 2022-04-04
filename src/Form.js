@@ -7,6 +7,7 @@ import { useAtom } from 'jotai';
 import accountAtom from './atoms/account.ts';
 import { getSigner } from './lib/polkadotExtension.ts';
 import { useFormik } from 'formik';
+import { useState, useEffect } from 'react'
 import './Form.css';
 import Papa from 'papaparse';
 
@@ -49,12 +50,22 @@ export default async function Form() {
     }
 
     const [account] = useAtom(accountAtom);
-    const signer = await getSigner(account);
-    const certificateData = await signCertificate({
-        api,
-        account,
-        signer,
-    });
+    try {
+        const signer = await getSigner(account);
+    }
+    catch (e) {
+        console.log(e)
+    }
+    try { 
+        const certificateData = await signCertificate({
+            api,
+            account,
+            signer,
+        });
+    }
+    catch (e) {
+        console.log(e)
+    }
 
     const formik = useFormik({
         initialValues: {
