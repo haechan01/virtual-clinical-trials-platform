@@ -20,7 +20,7 @@ const pruntimeURL = 'http://127.0.0.1:8000'; // assuming the default port
 const contractId = '0xa5ef1d6cb746b21a481c937870ba491d6fe120747bbeb5304c17de132e8d0392'; // your contract id
 const metadata = require('./metadata.json');
 export var trial_name = "";
-async function getContract(){
+async function getContract() {
     const contract = new ContractPromise(
         await create({ api, pruntimeURL, contractId }), // Phala's "create" decorator
         JSON.parse(metadata),
@@ -51,19 +51,17 @@ export default async function Form() {
 
     const [account] = useAtom(accountAtom);
     try {
-        const signer = await getSigner(account);
-    }
-    catch (e) {
+        var signer = await getSigner(account);
+    } catch (e) {
         console.log(e)
     }
-    try { 
-        const certificateData = await signCertificate({
+    try {
+        var certificateData = await signCertificate({
             api,
             account,
             signer,
         });
-    }
-    catch (e) {
+    } catch (e) {
         console.log(e)
     }
 
@@ -135,15 +133,18 @@ export default async function Form() {
 
 
 
-    return (
-        <div className = "container">
-        <form onSubmit = { formik.handleSubmit }
-        className = "form-container">
+    return ( <
+        div className = "container" >
+        <
+        form onSubmit = { formik.handleSubmit }
+        className = "form-container" >
 
         Upload Raw Data
 
-        <div className = 'file-upload'>
-        <input id = "file"
+        <
+        div className = 'file-upload' >
+        <
+        input id = "file"
         name = "file"
         type = "file"
         className = "upload-field"
@@ -151,12 +152,15 @@ export default async function Form() {
             (event) => {
                 handleCSV(event.currentTarget.files[0], "raw");
             }
-        }/>
-        </div>
+        }
+        /> <
+        /div>
         Upload Preprocessed Data
 
-        <div className = 'file-upload'>
-        <input id = "file_preprocessed"
+        <
+        div className = 'file-upload' >
+        <
+        input id = "file_preprocessed"
         name = "file_preprocessed"
         type = "file"
         className = "upload-field"
@@ -164,57 +168,69 @@ export default async function Form() {
             (event) => {
                 handleCSV(event.currentTarget.files[0], "processed");
             }
-        }/>
-        </div>
+        }
+        /> <
+        /div>
         Give your clinical trial a name
 
-        <div className = "input-block">
-        <input className = "input-field"
+        <
+        div className = "input-block" >
+        <
+        input className = "input-field"
         id = 'trialName'
         name = 'trialName'
         type = 'text'
         placeholder = "Trial Name"
         onChange = { formik.handleChange }
-        value = { formik.values.trialName }/>
-        </div>
+        value = { formik.values.trialName }
+        /> <
+        /div>
         Choose the type of test
 
-        <div className = "input-block-radios">
-        <input id = 'testType'
+        <
+        div className = "input-block-radios" >
+        <
+        input id = 'testType'
         name = 'testType'
         type = 'radio'
         onChange = { formik.handleChange }
-        value = "fishers_exact_test"/>
+        value = "fishers_exact_test" / >
 
         Fisher 's Exact Test    
 
-        <input id = 'testType'
+        <
+        input id = 'testType'
         name = 'testType'
         type = 'radio'
         onChange = { formik.handleChange }
-        value = "meandiff"/>
-        Difference of Means Test
-        </div>
+        value = "meandiff" / >
+        Difference of Means Test <
+        /div>
 
         Choose the significance level threshold
 
-        <div className = "input-block">
-        <input className = "input-field"
+        <
+        div className = "input-block" >
+        <
+        input className = "input-field"
         id = 'pValueThresh'
         name = 'pValueThresh'
         type = 'number'
         placeholder = "0.05"
         onChange = { formik.handleChange }
-        value = { formik.values.pValueThresh }/>
-        </div>
+        value = { formik.values.pValueThresh }
+        /> <
+        /div>
 
-        <button type = 'submit'
+        <
+        button type = 'submit'
         className = "button"
-        onSubmit = { formik.onSubmit }>
-        Submit
-        </button>
+        onSubmit = { formik.onSubmit } >
+        Submit <
+        /button>
 
-        </form>
-        </div>
+        <
+        /form> <
+        /div>
     )
 }
