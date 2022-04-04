@@ -16,6 +16,7 @@ export default async function Results() {
         account,
         signer,
     });
+    contract = getContract()
     var message = ""
     try {
         // obtain stat_test results
