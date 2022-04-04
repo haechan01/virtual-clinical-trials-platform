@@ -1,0 +1,283 @@
+diff --git a/node_modules/@phala/sdk/dist/index.js b/node_modules/@phala/sdk/dist/index.js
+index 85e0428..d3350b6 100644
+--- a/node_modules/@phala/sdk/dist/index.js
++++ b/node_modules/@phala/sdk/dist/index.js
+@@ -103,14 +103,14 @@ var decrypt = (enc, key, iv) => {
+ };
+ 
+ // src/proto/index.js
+-import * as $protobuf from "protobufjs/minimal";
++import * as $protobuf from "protobufjs/minimal.js";
+ var $Reader = $protobuf.Reader;
+ var $Writer = $protobuf.Writer;
+ var $util = $protobuf.util;
+ var $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
+ var prpc = $root.prpc = (() => {
+   const prpc2 = {};
+-  prpc2.PrpcError = function() {
++  prpc2.PrpcError = function () {
+     function PrpcError(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -190,7 +190,7 @@ var prpc = $root.prpc = (() => {
+ })();
+ var pruntimeRpc = $root.pruntimeRpc = (() => {
+   const pruntimeRpc2 = {};
+-  pruntimeRpc2.PhactoryAPI = function() {
++  pruntimeRpc2.PhactoryAPI = function () {
+     function PhactoryAPI(rpcImpl, requestDelimited, responseDelimited) {
+       $protobuf.rpc.Service.call(this, rpcImpl, requestDelimited, responseDelimited);
+     }
+@@ -233,7 +233,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     }, "name", { value: "Echo" });
+     return PhactoryAPI;
+   }();
+-  pruntimeRpc2.PhactoryInfo = function() {
++  pruntimeRpc2.PhactoryInfo = function () {
+     function PhactoryInfo(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -626,14 +626,14 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return PhactoryInfo;
+   }();
+-  pruntimeRpc2.GatekeeperRole = function() {
++  pruntimeRpc2.GatekeeperRole = function () {
+     const valuesById = {}, values = Object.create(valuesById);
+     values[valuesById[0] = "None"] = 0;
+     values[valuesById[1] = "Dummy"] = 1;
+     values[valuesById[2] = "Active"] = 2;
+     return values;
+   }();
+-  pruntimeRpc2.GatekeeperStatus = function() {
++  pruntimeRpc2.GatekeeperStatus = function () {
+     function GatekeeperStatus(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -742,7 +742,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return GatekeeperStatus;
+   }();
+-  pruntimeRpc2.MemoryUsage = function() {
++  pruntimeRpc2.MemoryUsage = function () {
+     function MemoryUsage(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -894,7 +894,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return MemoryUsage;
+   }();
+-  pruntimeRpc2.SyncedTo = function() {
++  pruntimeRpc2.SyncedTo = function () {
+     function SyncedTo(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -970,7 +970,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return SyncedTo;
+   }();
+-  pruntimeRpc2.HeadersToSync = function() {
++  pruntimeRpc2.HeadersToSync = function () {
+     function HeadersToSync(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -1084,7 +1084,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return HeadersToSync;
+   }();
+-  pruntimeRpc2.ParaHeadersToSync = function() {
++  pruntimeRpc2.ParaHeadersToSync = function () {
+     function ParaHeadersToSync(properties) {
+       this.proof = [];
+       if (properties) {
+@@ -1204,7 +1204,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return ParaHeadersToSync;
+   }();
+-  pruntimeRpc2.CombinedHeadersToSync = function() {
++  pruntimeRpc2.CombinedHeadersToSync = function () {
+     function CombinedHeadersToSync(properties) {
+       this.proof = [];
+       if (properties) {
+@@ -1378,7 +1378,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return CombinedHeadersToSync;
+   }();
+-  pruntimeRpc2.HeadersSyncedTo = function() {
++  pruntimeRpc2.HeadersSyncedTo = function () {
+     function HeadersSyncedTo(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -1470,7 +1470,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return HeadersSyncedTo;
+   }();
+-  pruntimeRpc2.Blocks = function() {
++  pruntimeRpc2.Blocks = function () {
+     function Blocks(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -1556,7 +1556,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return Blocks;
+   }();
+-  pruntimeRpc2.InitRuntimeRequest = function() {
++  pruntimeRpc2.InitRuntimeRequest = function () {
+     function InitRuntimeRequest(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -1752,7 +1752,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return InitRuntimeRequest;
+   }();
+-  pruntimeRpc2.InitRuntimeResponse = function() {
++  pruntimeRpc2.InitRuntimeResponse = function () {
+     function InitRuntimeResponse(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -1944,7 +1944,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return InitRuntimeResponse;
+   }();
+-  pruntimeRpc2.Attestation = function() {
++  pruntimeRpc2.Attestation = function () {
+     function Attestation(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -2085,7 +2085,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return Attestation;
+   }();
+-  pruntimeRpc2.AttestationReport = function() {
++  pruntimeRpc2.AttestationReport = function () {
+     function AttestationReport(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -2212,7 +2212,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return AttestationReport;
+   }();
+-  pruntimeRpc2.GetEgressMessagesResponse = function() {
++  pruntimeRpc2.GetEgressMessagesResponse = function () {
+     function GetEgressMessagesResponse(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -2298,7 +2298,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return GetEgressMessagesResponse;
+   }();
+-  pruntimeRpc2.ContractQueryRequest = function() {
++  pruntimeRpc2.ContractQueryRequest = function () {
+     function ContractQueryRequest(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -2404,7 +2404,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return ContractQueryRequest;
+   }();
+-  pruntimeRpc2.Signature = function() {
++  pruntimeRpc2.Signature = function () {
+     function Signature(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -2557,7 +2557,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return Signature;
+   }();
+-  pruntimeRpc2.Certificate = function() {
++  pruntimeRpc2.Certificate = function () {
+     function Certificate(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -2663,7 +2663,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return Certificate;
+   }();
+-  pruntimeRpc2.SignatureType = function() {
++  pruntimeRpc2.SignatureType = function () {
+     const valuesById = {}, values = Object.create(valuesById);
+     values[valuesById[0] = "Ed25519"] = 0;
+     values[valuesById[1] = "Sr25519"] = 1;
+@@ -2673,7 +2673,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     values[valuesById[5] = "EcdsaWrapBytes"] = 5;
+     return values;
+   }();
+-  pruntimeRpc2.ContractQueryResponse = function() {
++  pruntimeRpc2.ContractQueryResponse = function () {
+     function ContractQueryResponse(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -2759,7 +2759,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return ContractQueryResponse;
+   }();
+-  pruntimeRpc2.GetWorkerStateRequest = function() {
++  pruntimeRpc2.GetWorkerStateRequest = function () {
+     function GetWorkerStateRequest(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -2845,7 +2845,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return GetWorkerStateRequest;
+   }();
+-  pruntimeRpc2.WorkerState = function() {
++  pruntimeRpc2.WorkerState = function () {
+     function WorkerState(properties) {
+       this.waitingHeartbeats = [];
+       if (properties) {
+@@ -3110,7 +3110,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return WorkerState;
+   }();
+-  pruntimeRpc2.BenchState = function() {
++  pruntimeRpc2.BenchState = function () {
+     function BenchState(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -3232,7 +3232,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return BenchState;
+   }();
+-  pruntimeRpc2.MiningState = function() {
++  pruntimeRpc2.MiningState = function () {
+     function MiningState(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -3354,7 +3354,7 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return MiningState;
+   }();
+-  pruntimeRpc2.EchoMessage = function() {
++  pruntimeRpc2.EchoMessage = function () {
+     function EchoMessage(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -3440,14 +3440,14 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+     };
+     return EchoMessage;
+   }();
+-  pruntimeRpc2.ResponsiveEvent = function() {
++  pruntimeRpc2.ResponsiveEvent = function () {
+     const valuesById = {}, values = Object.create(valuesById);
+     values[valuesById[0] = "NoEvent"] = 0;
+     values[valuesById[1] = "EnterUnresponsive"] = 1;
+     values[valuesById[2] = "ExitUnresponsive"] = 2;
+     return values;
+   }();
+-  pruntimeRpc2.TokenomicInfo = function() {
++  pruntimeRpc2.TokenomicInfo = function () {
+     function TokenomicInfo(properties) {
+       if (properties) {
+         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+@@ -3828,9 +3828,9 @@ var pruntimeRpc = $root.pruntimeRpc = (() => {
+ })();
+ var google = $root.google = (() => {
+   const google2 = {};
+-  google2.protobuf = function() {
++  google2.protobuf = function () {
+     const protobuf = {};
+-    protobuf.Empty = function() {
++    protobuf.Empty = function () {
+       function Empty(properties) {
+         if (properties) {
+           for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)

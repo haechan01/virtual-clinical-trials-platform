@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Form from './Form';
 import Results from './Results';
 import Nav from './Nav'
-// import ContractLoader from './components/ContractLoader';
 
 function App() {
   return (
