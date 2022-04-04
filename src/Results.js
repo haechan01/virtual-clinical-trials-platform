@@ -4,7 +4,7 @@ import { signCertificate, } from '@phala/sdk';
 import { useAtom } from 'jotai';
 import accountAtom from './atoms/account.ts';
 import { getSigner } from './lib/polkadotExtension.ts';
-import { api, contract, trial_name } from './form.js';
+import { api, contract, trial_name } from './Form.js';
 import { stringify } from '@polkadot/util';
 
 export default async function Results() {
