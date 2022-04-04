@@ -21,9 +21,9 @@ const metadata = require('./metadata.json');
 export var trial_name = "";
 async function getContract() {
     const contract = new ContractPromise(
-    await create({ api, pruntimeURL, contractId }), // Phala's "create" decorator
-    JSON.parse(metadata),
-    contractId);
+        await create({ api, pruntimeURL, contractId }), // Phala's "create" decorator
+        JSON.parse(metadata),
+        contractId);
     return contract;
 };
 export contract = getContract();
