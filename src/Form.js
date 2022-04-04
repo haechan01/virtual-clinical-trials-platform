@@ -25,8 +25,8 @@ async function getContract() {
     JSON.parse(metadata),
     contractId);
     return contract;
-}
-export contract = getContract()
+};
+export contract = getContract();
 
 export default async function Form() {
 
