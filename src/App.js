@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Form from './Form';
-import Results from './Results';
-import Nav from './Nav'
+import Form from './Form.js';
+import Results from './Results.js';
+import Nav from './Nav.js'
 // import ContractLoader from './components/ContractLoader';
 
 function App() {
