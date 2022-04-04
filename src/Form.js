@@ -51,13 +51,13 @@ export default async function Form() {
 
     const [account] = useAtom(accountAtom);
     try {
-        const signer = await getSigner(account);
+        var signer = await getSigner(account);
     }
     catch (e) {
         console.log(e)
     }
     try { 
-        const certificateData = await signCertificate({
+        var certificateData = await signCertificate({
             api,
             account,
             signer,
