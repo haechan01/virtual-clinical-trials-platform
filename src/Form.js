@@ -19,14 +19,14 @@ const pruntimeURL = 'http://127.0.0.1:8000'; // assuming the default port
 const contractId = '0xa5ef1d6cb746b21a481c937870ba491d6fe120747bbeb5304c17de132e8d0392'; // your contract id
 const metadata = require('./metadata.json');
 export var trial_name = "";
-async function getContract() {
+async function getContract(){
     const contract = new ContractPromise(
         await create({ api, pruntimeURL, contractId }), // Phala's "create" decorator
         JSON.parse(metadata),
         contractId);
     return contract;
 };
-export contract = getContract();
+export const contract = getContract();
 
 export default async function Form() {
 
