@@ -68,7 +68,7 @@ export default function Results() {
             div > You have not uploaded your trial data yet,
             click on "New trial"
             or "Initialize new contract chain"
-            toget started < /div >
+            to get started < /div >
         } <
         /div>
     )
