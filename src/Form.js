@@ -1,7 +1,5 @@
 import React from 'react';
-import { ApiPromise } from '@polkadot/api';
 import { useEffect, useState } from 'react';
-import { ContractPromise } from '@polkadot/api-contract';
 import { signCertificate } from '@phala/sdk';
 import { useAtom } from 'jotai';
 import accountAtom from './atoms/account.ts';
@@ -20,11 +18,6 @@ export default function Form() {
     const [api, setApi] = useState()
     const [contract, setContract] = useState()
 
-    useEffect(
-        () => () => {
-            api.disconnect()
-        }, [api]
-    )
 
     useEffect(() => {
         setCertificateData(undefined)

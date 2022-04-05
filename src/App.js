@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Form from './Form.js';
 import Results from './Results.js';
 import Nav from './Nav.js'
-// import ContractLoader from './components/ContractLoader';
+import Resetcontract from './Newcontract.js';
 
 function App() {
+
     return ( <
         Router >
         <
@@ -23,12 +24,16 @@ function App() {
         Route path = "/new-trial"
         element = { < Form / > }
         /> <
+        Route path = "/new-contract-chain"
+        element = { < Resetcontract / > }
+        /> <
         Route path = "/trial-results"
         element = { < Results / > }
-        /> <
-        /Routes> <
-        /div> <
-        /Router>
+        /> < /
+        Routes >
+        <
+        / div >   < /
+        Router >
     );
 }
 
