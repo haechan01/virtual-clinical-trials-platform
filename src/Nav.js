@@ -11,6 +11,11 @@ export default function Nav() {
         div className = 'nav-links' >
         <
         Link className = 'nav-link'
+        to = "/" >
+        <
+        label > Home < /label> < /
+        Link > <
+        Link className = 'nav-link'
         to = "/new-trial" >
         <
         label > New trial < /label> < /

@@ -4,7 +4,6 @@ import { create } from '@phala/sdk'
 import { Button } from 'baseui/button'
 import { FormControl } from 'baseui/form-control'
 import { Input } from 'baseui/input'
-import { Textarea } from 'baseui/textarea'
 import { toaster } from 'baseui/toast'
 import { useAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
@@ -22,7 +21,7 @@ const pruntimeURLAtom = atomWithStorage<string>(
     'http://127.0.0.1:8000'
 )
 const contractsAtom = atomWithStorage<
-    Record<string, { contractId: string; metadata: string }>
+    Record<string, { contractId: string}>
 >('atom:contracts', {})
 
 const ContractLoader: VFC<{
@@ -35,7 +34,8 @@ const ContractLoader: VFC<{
     const [contractInfo, setContractInfo] = useAtom(contractInfoAtom.current)
     const [endpoint, setEndpoint] = useAtom(endpointAtom)
     const [pruntimeURL, setPruntimeURL] = useAtom(pruntimeURLAtom)
-    const { contractId = '', metadata = require('../metadata.json')} = contractInfo || {}
+    const metadata = require('../metadata.json')
+    const { contractId = ''} = contractInfo || {}
     const isClient = useIsClient()
     if (!isClient) return null
 
@@ -102,27 +102,8 @@ const ContractLoader: VFC<{
                     }
                 ></Input>
             </FormControl>
-            <FormControl label="ABI">
-                <Textarea
-                    overrides={{
-                        Input: {
-                            style: {
-                                fontFamily: 'monospace',
-                                height: '600px',
-                            },
-                        },
-                    }}
-                    value={metadata}
-                    onChange={(e) =>
-                        setContractInfo((contractInfo) => ({
-                            ...contractInfo,
-                            metadata: e.currentTarget.value,
-                        }))
-                    }
-                ></Textarea>
-            </FormControl>
 
-            <Button disabled={!contractId || !metadata} onClick={loadContract}>
+            <Button disabled={!contractId} onClick={loadContract}>
                 Load Contract
             </Button> 
         </>
