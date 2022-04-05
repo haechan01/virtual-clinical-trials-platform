@@ -18,7 +18,7 @@ const endpointAtom = atomWithStorage<string>(
 )
 const pruntimeURLAtom = atomWithStorage<string>(
     'atom:pruntime_url',
-    'http://127.0.0.1:8000'
+    'https://poc5.phala.network/tee-api-1'
 )
 const contractsAtom = atomWithStorage<
     Record<string, { contractId: string}>
@@ -44,7 +44,7 @@ const ContractLoader: VFC<{
             const api = await createApi(endpoint)
             const contract = new ContractPromise(
                 await create({ api, baseURL: pruntimeURL, contractId }),
-                JSON.parse(metadata),
+                metadata,
                 contractId
             )
             onLoad({ api, contract })
