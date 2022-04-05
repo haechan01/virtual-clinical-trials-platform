@@ -1,34 +1,34 @@
 import React from 'react';
-import { createApi } from './lib/polkadotApi.ts';
+import { ApiPromise } from '@polkadot/api';
+import { useEffect, useState } from 'react';
 import { ContractPromise } from '@polkadot/api-contract';
-// import { useEffect, useState } from 'react'
-import { create, signCertificate, } from '@phala/sdk';
+import { signCertificate } from '@phala/sdk';
 import { useAtom } from 'jotai';
 import accountAtom from './atoms/account.ts';
 import { getSigner } from './lib/polkadotExtension.ts';
 import { useFormik } from 'formik';
 import './Form.css';
+import { toaster } from 'baseui/toast'
 import Papa from 'papaparse';
+import ContractLoader from './components/ContractLoader.tsx';
 
-// imported Polkadot Api
-export const endpoint = 'ws://localhost:9944';
-export const api = createApi(endpoint);
+export var trial_name = ""
 
-// Create a contract object with the metadata and the contract id.
-const pruntimeURL = 'http://127.0.0.1:8000'; // assuming the default port
-const contractId = '0xa5ef1d6cb746b21a481c937870ba491d6fe120747bbeb5304c17de132e8d0392'; // your contract id
-const metadata = require('./metadata.json');
-export var trial_name = "";
-async function getContract() {
-    const contract = new ContractPromise(
-        await create({ api, pruntimeURL, contractId }), // Phala's "create" decorator
-        JSON.parse(metadata),
-        contractId);
-    return contract;
-};
-export const contract = getContract();
+export default function Form() {
+    const [account] = useAtom(accountAtom);
+    const [certificateData, setCertificateData] = useState()
+    const [api, setApi] = useState()
+    const [contract, setContract] = useState()
 
-export default async function Form() {
+    useEffect(
+        () => () => {
+            api.disconnect()
+        }, [api]
+    )
+
+    useEffect(() => {
+        setCertificateData(undefined)
+    }, [account])
 
     function handleCSV(file, fileType) {
         console.log(file)
@@ -46,22 +46,6 @@ export default async function Form() {
                 console.log(data);
             }
         });
-    }
-
-    const [account] = useAtom(accountAtom);
-    try {
-        var signer = await getSigner(account);
-    } catch (e) {
-        console.log(e)
-    }
-    try {
-        var certificateData = await signCertificate({
-            api,
-            account,
-            signer,
-        });
-    } catch (e) {
-        console.log(e)
     }
 
     const formik = useFormik({
@@ -92,38 +76,58 @@ export default async function Form() {
         // what happens when user submits the form
         onSubmit: async(values) => {
             trial_name = values.trialName;
+            if (account && api) {
+                try {
+                    const signer = await getSigner(account)
 
-            try {
-                // initialize contract 
-                await contract.tx.default({})
-                    .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
-                console.log("instantiate succeeded");
-            } catch (e) {
-                console.log(e);
-            }
-            try {
-                // set data conditions
-                await contract.tx.new({}, values.pValueThresh * 100, values.testType)
-                    .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
-                console.log("Property Upload succeeded");
-            } catch (e) {
-                console.log(e);
-            }
-            try {
-                // upload preprocessed data
-                await contract.tx.upload_preprocessed({}, values.file_preprocessed)
-                    .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
-                console.log("Data upload succeeded");
-            } catch (e) {
-                console.log(e);
-            }
-            try {
-                // obtain p_value
-                const received_p = await contract.query.get_p_value(certificateData, {});
-                console.log("user p: %d", values.pValueThresh);
-                console.log("received from blockchain: %", received_p);
-            } catch (e) {
-                console.log(e);
+                    // Save certificate data to state, or anywhere else you want like local storage
+                    setCertificateData(
+                        await signCertificate({
+                            api,
+                            account,
+                            signer,
+                        })
+                    )
+                    toaster.positive('Certificate signed', {})
+                    try {
+                        // initialize contract 
+                        await contract.tx.default({})
+                            .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
+                        console.log("instantiate succeeded");
+                        await api.disconnect()
+                    } catch (e) {
+                        console.log(e);
+                    }
+                    try {
+                        // set data conditions
+                        await contract.tx.new({}, values.pValueThresh * 100, values.testType)
+                            .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
+                        console.log("Property Upload succeeded");
+                        await api.disconnect()
+                    } catch (e) {
+                        console.log(e);
+                    }
+                    try {
+                        // upload preprocessed data
+                        await contract.tx.upload_preprocessed({}, values.file_preprocessed)
+                            .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
+                        await api.disconnect()
+                        console.log("Data upload succeeded");
+                    } catch (e) {
+                        console.log(e);
+                    }
+                    try {
+                        // obtain p_value
+                        const received_p = await contract.query.get_p_value(certificateData, {});
+                        await api.disconnect()
+                        console.log("user p: %d", values.pValueThresh);
+                        console.log("received from blockchain: %", received_p);
+                    } catch (e) {
+                        console.log(e);
+                    }
+                } catch (err) {
+                    toaster.negative((err).message, {})
+                }
             }
         }
     });
@@ -132,8 +136,7 @@ export default async function Form() {
 
 
 
-    return ( <
-        div className = "container" >
+    return contract ? ( < div className = "container" >
         <
         form onSubmit = { formik.handleSubmit }
         className = "form-container" >
@@ -152,8 +155,7 @@ export default async function Form() {
                 handleCSV(event.currentTarget.files[0], "raw");
             }
         }
-        /> < /
-        div >
+        /> </div >
         Upload Preprocessed Data
 
         <
@@ -168,8 +170,7 @@ export default async function Form() {
                 handleCSV(event.currentTarget.files[0], "processed");
             }
         }
-        /> < /
-        div >
+        /> </div >
         Give your clinical trial a name
 
         <
@@ -182,8 +183,7 @@ export default async function Form() {
         placeholder = "Trial Name"
         onChange = { formik.handleChange }
         value = { formik.values.trialName }
-        /> < /
-        div >
+        /> </div >
         Choose the type of test
 
         <
@@ -203,8 +203,7 @@ export default async function Form() {
         type = 'radio'
         onChange = { formik.handleChange }
         value = "meandiff" / >
-        Difference of Means Test <
-        /div>
+        Difference of Means Test < /div>
 
         Choose the significance level threshold
 
@@ -218,18 +217,24 @@ export default async function Form() {
         placeholder = "0.05"
         onChange = { formik.handleChange }
         value = { formik.values.pValueThresh }
-        /> < /
-        div >
+        /> </div >
 
         <
         button type = 'submit'
         className = "button"
         onSubmit = { formik.onSubmit } >
-        Submit <
-        /button>
+        Submit < /button>
 
         <
-        /form> < /
-        div >
+        /form> </div >
+    ) : ( <
+        ContractLoader name = { trial_name }
+        onLoad = {
+            ({ api, contract }) => {
+                setApi(api)
+                setContract(contract)
+            }
+        }
+        /> 
     )
 }

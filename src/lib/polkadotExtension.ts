@@ -8,11 +8,15 @@ export const enablePolkadotExtension = async (): Promise<void> => {
   enablePolkadotExtensionCache = (async () => {
     const {web3Enable} = await import('@polkadot/extension-dapp')
     const extensions = await web3Enable('Phala SDK Example')
-
-    if (extensions.length === 0) {
-      throw new Error(
-        'No extension installed, or the user did not accept the authorization'
-      )
+    try {
+      if (extensions.length === 0) {
+        throw new Error(
+          'No extension installed, or the user did not accept the authorization'
+        )
+      }
+    }
+    catch (e) {
+      console.log(e)
     }
   })()
 

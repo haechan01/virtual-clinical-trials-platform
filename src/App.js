@@ -8,29 +8,41 @@ import Nav from './Nav.js'
 // import ContractLoader from './components/ContractLoader';
 
 function App() {
-  return (
-    <Router>
-      <Nav />
-      <div className="App">
-        <Routes>
-          <Route path="/" exact element={<Home />} />
-          <Route path="/new-trial" element={<Form />} />
-          <Route path="/trial-results" element={<Results />} />
-        </Routes>
-      </div>
-    </Router>
-  );
+    return ( <
+        Router >
+        <
+        Nav / >
+        <
+        div className = "App" >
+        <
+        Routes >
+        <
+        Route path = "/"
+        exact element = { < Home / > }
+        /> <
+        Route path = "/new-trial"
+        element = { < Form / > }
+        /> <
+        Route path = "/trial-results"
+        element = { < Results / > }
+        /> <
+        /Routes> <
+        /div> <
+        /Router>
+    );
 }
 
 const Home = () => {
-  return (
-    <div>
-      <h1>
-        Welcome to Clinical Trial Platform
-      </h1>
-      click "New Trial" to get started.
-    </div>
-  )
+    return ( <
+        div >
+        <
+        h1 >
+        Welcome to Clinical Trial Platform <
+        /h1>
+        click "New Trial"
+        to get started. <
+        /div>
+    )
 }
 
 export default App;

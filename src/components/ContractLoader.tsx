@@ -9,17 +9,17 @@ import { toaster } from 'baseui/toast'
 import { useAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { focusAtom } from 'jotai/optics'
-import { useRef, VFC } from 'react'
-import useIsClient from '../hooks/useIsClient'
-import { createApi } from '../lib/polkadotApi'
+import { useRef, VFC } from "react"
+import useIsClient from '../hooks/useIsClient.ts'
+import { createApi } from '../lib/polkadotApi.ts'
 
 const endpointAtom = atomWithStorage<string>(
     'atom:endpoint',
-    'ws://localhost:9944'
+    'wss://poc5.phala.network/ws'
 )
 const pruntimeURLAtom = atomWithStorage<string>(
     'atom:pruntime_url',
-    'http://localhost:8000'
+    'http://127.0.0.1:8000'
 )
 const contractsAtom = atomWithStorage<
     Record<string, { contractId: string; metadata: string }>
@@ -35,7 +35,7 @@ const ContractLoader: VFC<{
     const [contractInfo, setContractInfo] = useAtom(contractInfoAtom.current)
     const [endpoint, setEndpoint] = useAtom(endpointAtom)
     const [pruntimeURL, setPruntimeURL] = useAtom(pruntimeURLAtom)
-    const { contractId = '', metadata = '' } = contractInfo || {}
+    const { contractId = '', metadata = require('../metadata.json')} = contractInfo || {}
     const isClient = useIsClient()
     if (!isClient) return null
 
@@ -124,7 +124,7 @@ const ContractLoader: VFC<{
 
             <Button disabled={!contractId || !metadata} onClick={loadContract}>
                 Load Contract
-            </Button>
+            </Button> 
         </>
     )
 }
