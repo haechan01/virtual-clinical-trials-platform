@@ -2,29 +2,33 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { signCertificate } from '@phala/sdk';
 import { useAtom } from 'jotai';
+import { Button } from 'baseui/button'
 import accountAtom from './atoms/account.ts';
 import { getSigner } from './lib/polkadotExtension.ts';
 import { useFormik } from 'formik';
+import { FormControl } from 'baseui/form-control';
+import { Input } from 'baseui/input';
+import { Block } from 'baseui/block';
 import './Form.css';
-import { toaster } from 'baseui/toast'
+import { FileUploader } from "baseui/file-uploader";
+import { RadioGroup, Radio, ALIGN } from 'baseui/radio';
+import 'react-notifications/lib/notifications.css';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 import Papa from 'papaparse';
 import ContractLoader from './components/ContractLoader.tsx';
+import AccountSelect from './components/AccountSelect.tsx';
 
-export var trial_name = ""
-
-export default function Form() {
-    const [account] = useAtom(accountAtom);
+export default function FormPage() {
     const [certificateData, setCertificateData] = useState()
     const [api, setApi] = useState()
     const [contract, setContract] = useState()
-
+    const account = useAtom(accountAtom)
 
     useEffect(() => {
         setCertificateData(undefined)
     }, [account])
 
     function handleCSV(file, fileType) {
-        console.log(file)
         Papa.parse(file, {
             header: false,
             dynamicTyping: true,
@@ -44,32 +48,24 @@ export default function Form() {
     const formik = useFormik({
         initialValues: {
             trialName: "",
-            testType: "",
+            testType: "fishers_exact_test",
             pValueThresh: 0.05,
             file: "",
             file_preprocessed: ""
         },
 
-        validate: (values) => {
-            const errors = {};
-            if (!values.trialName) {
-                errors.trialName = 'Required';
-            } else if (!/^[A-Z0-9]$/i.test(values.trialName)) {
-                errors.trialName = 'Invalid Trial Name type';
-            }
-            if (!values.testType) {
-                errors.testType = 'Required';
-            }
-            if (!values.file_preprocessed) {
-                errors.file_preprocessed = 'Required';
-            }
-            return errors;
+        handleChange: (event) => {
+            // get name and value from event.target
+            // is the same as const name = event.target.name
+            const { name, value } = event.target
+                // make sure you have name prop in 
+                // your textfield and it is same name as your initial state
+            formik.setFieldValue(name, value) // this call formik to set your value
         },
 
         // what happens when user submits the form
         onSubmit: async(values) => {
-            trial_name = values.trialName;
-            if (account && api) {
+            if ((account && api)) {
                 try {
                     const signer = await getSigner(account)
 
@@ -81,46 +77,55 @@ export default function Form() {
                             signer,
                         })
                     )
-                    toaster.positive('Certificate signed', {})
+                    NotificationManager.success('Certificate successfully signed', 'Certificate signage');
                     try {
                         // initialize contract 
                         await contract.tx.default({})
                             .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
-                        console.log("instantiate succeeded");
-                        await api.disconnect()
+                        NotificationManager.success('Trial block created', 'Contract begin');
                     } catch (e) {
-                        console.log(e);
+                        NotificationManager.error('Could not create trial block', 'Failed block creation', 5000);
                     }
                     try {
                         // set data conditions
                         await contract.tx.new({}, values.pValueThresh * 100, values.testType)
                             .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
-                        console.log("Property Upload succeeded");
-                        await api.disconnect()
+                        NotificationManager.success('Trial information uploaded successfully', 'Information Upload');
                     } catch (e) {
-                        console.log(e);
+                        NotificationManager.error('Could not upload Trial information', 'Failed information upload', 5000);
                     }
                     try {
                         // upload preprocessed data
                         await contract.tx.upload_preprocessed({}, values.file_preprocessed)
                             .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
-                        await api.disconnect()
-                        console.log("Data upload succeeded");
+                        NotificationManager.success('Preprocessed Data uploaded uccessfully', 'Preprocessed Data Upload');
                     } catch (e) {
-                        console.log(e);
+                        NotificationManager.error('Preprocessed Data failed to upload', 'Failed Data Upload', 5000);
                     }
                     try {
                         // obtain p_value
                         const received_p = await contract.query.get_p_value(certificateData, {});
-                        await api.disconnect()
-                        console.log("user p: %d", values.pValueThresh);
-                        console.log("received from blockchain: %", received_p);
+                        NotificationManager.info(`user p: ${values.pValueThresh}`, "Obtained p-value from form");
+                        NotificationManager.info(`received from blockchain: ${received_p}`, "P-value on-chain");
                     } catch (e) {
-                        console.log(e);
+                        NotificationManager.error('Failed to obtain on-chain p-value', 'Failed p-value retrieval', 5000);
+                    }
+                    try {
+                        // obtain stat_test results
+                        const received_result = await contract.query.get_result(certificateData, {});
+                        if (received_result) {
+                            alert("We have sufficient information to reject the null hypothesis");
+                        } else {
+                            alert("We do not have sufficient information to reject the null hypothesis");
+                        }
+                    } catch (e) {
+                        NotificationManager.error('Failed to obtain trial results', 'Failed result collection', 5000);
                     }
                 } catch (err) {
-                    toaster.negative((err).message, {})
+                    NotificationManager.error(`${err}`, 'Failed to sign certificate', 5000);
                 }
+            } else {
+                alert("No defined account for use")
             }
         }
     });
@@ -128,100 +133,99 @@ export default function Form() {
 
 
 
-
-    return contract ? ( < div className = "container" >
-        <
-        form onSubmit = { formik.handleSubmit }
+    return contract ? ( <
+        div className = "container" > <
+        Block > <
+        form onSubmit = {
+            (e) => {
+                e.preventDefault()
+                formik.handleSubmit()
+            }
+        }
         className = "form-container" >
-
-        Upload Raw Data
-
         <
-        div className = 'file-upload' >
+        AccountSelect / >
         <
-        input id = "file"
-        name = "file"
-        type = "file"
-        className = "upload-field"
-        onChange = {
+        FormControl label = "Upload Raw Data" >
+        <
+        FileUploader accept = ".csv"
+        onDrop = {
             (event) => {
-                handleCSV(event.currentTarget.files[0], "raw");
+                console.log(event[0])
+                handleCSV(event[0], "raw");
             }
         }
-        /> </div >
-        Upload Preprocessed Data
-
+        name = "file" /
+        >
         <
-        div className = 'file-upload' >
+        /FormControl> <
+        FormControl label = "Upload Preprocessed Data" >
         <
-        input id = "file_preprocessed"
-        name = "file_preprocessed"
-        type = "file"
-        className = "upload-field"
-        onChange = {
+        FileUploader accept = ".csv"
+        onDrop = {
             (event) => {
-                handleCSV(event.currentTarget.files[0], "processed");
+                console.log(event[0])
+                handleCSV(event[0], "processed");
             }
         }
-        /> </div >
-        Give your clinical trial a name
-
+        name = "file" /
+        >
         <
-        div className = "input-block" >
+        /FormControl> <
+        FormControl label = "Give your clinical trial a name" >
         <
-        input className = "input-field"
-        id = 'trialName'
-        name = 'trialName'
-        type = 'text'
-        placeholder = "Trial Name"
-        onChange = { formik.handleChange }
+        Input placeholder = "Trial Name"
+        overrides = {
+            {
+                Input: {
+                    style: {
+                        fontFamily: 'monospace',
+                    },
+                },
+            }
+        }
         value = { formik.values.trialName }
-        /> </div >
-        Choose the type of test
-
-        <
-        div className = "input-block-radios" >
-        <
-        input id = 'testType'
-        name = 'testType'
-        type = 'radio'
+        type = 'text'
         onChange = { formik.handleChange }
-        value = "fishers_exact_test" / >
-
-        Fisher 's Exact Test    
-
+        />< /
+        FormControl >
         <
-        input id = 'testType'
-        name = 'testType'
-        type = 'radio'
+        RadioGroup value = { formik.values.testType }
         onChange = { formik.handleChange }
-        value = "meandiff" / >
-        Difference of Means Test < /div>
-
-        Choose the significance level threshold
-
+        name = "Test Type"
+        align = { ALIGN.horizontal }
+        label = "Choose the type of test " >
         <
-        div className = "input-block" >
+        Radio value = "fishers_exact_test"
+        description = "Default Statistical test"
+        checked > Fisher 's Exact Test   < /Radio> <
+        Radio value = "Difference of means test" > Difference of Means Test < /Radio> < /
+        RadioGroup > <
+        FormControl label = "Choose the significance level threshold" >
         <
-        input className = "input-field"
-        id = 'pValueThresh'
-        name = 'pValueThresh'
-        type = 'number'
-        placeholder = "0.05"
-        onChange = { formik.handleChange }
+        Input placeholder = "0.05"
+        overrides = {
+            {
+                Input: {
+                    style: {
+                        fontFamily: 'monospace',
+                    },
+                },
+            }
+        }
         value = { formik.values.pValueThresh }
-        /> </div >
+        type = 'number'
+        onChange = { formik.handleChange }
+        />< /
+        FormControl >
 
         <
-        button type = 'submit'
-        className = "button"
-        onSubmit = { formik.onSubmit } >
-        Submit < /button>
-
-        <
-        /form> </div >
-    ) : ( <
-        ContractLoader name = { trial_name }
+        Button type = 'submit' >
+        Submit <
+        /Button>< /
+        form > <
+        NotificationContainer / > < /Block ></div > ) : ( <
+        ContractLoader name = "Clinical Trial"
         onLoad = {
             ({ api, contract }) => {
                 setApi(api)
@@ -231,3 +235,4 @@ export default function Form() {
         /> 
     )
 }
+FormPage.title = 'Trial upload page';

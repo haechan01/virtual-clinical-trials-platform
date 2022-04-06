@@ -28,8 +28,12 @@ export const getSigner = async (
 ): Promise<Signer> => {
   await enablePolkadotExtension()
   const {web3FromSource} = await import('@polkadot/extension-dapp')
+  console.log("web3 from Source works")
+  console.log(account.meta.source)
   const injector = await web3FromSource(account.meta.source)
+  console.log("Account Injector works")
   const signer = injector.signer
+  console.log("Signer works")
 
   return signer
 }

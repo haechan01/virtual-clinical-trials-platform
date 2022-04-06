@@ -1,4 +1,4 @@
-.nav-links{
+.nav-links {
     background-color: rgb(31, 29, 29);
     min-height: 10vh;
     width: 100%;
@@ -7,7 +7,7 @@
     align-items: center;
 }
 
-.nav-link{
+.nav-link {
     color: white;
     text-decoration: none;
     margin-right: 2rem;

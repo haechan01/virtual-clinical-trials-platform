@@ -2,9 +2,10 @@ import type { ApiPromise } from '@polkadot/api'
 import { ContractPromise } from '@polkadot/api-contract'
 import { create } from '@phala/sdk'
 import { Button } from 'baseui/button'
+import {Block} from 'baseui/block'
 import { FormControl } from 'baseui/form-control'
 import { Input } from 'baseui/input'
-import { toaster } from 'baseui/toast'
+import { toaster, ToasterContainer } from 'baseui/toast'
 import { useAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { focusAtom } from 'jotai/optics'
@@ -48,65 +49,64 @@ const ContractLoader: VFC<{
                 contractId
             )
             onLoad({ api, contract })
-            toaster.positive('Contract loaded successfully', {})
+            console.log('Contract loaded successfully')
         } catch (err) {
             toaster.negative((err as Error).message, {})
         }
     }
 
     return (
-        <>
-            <FormControl label="WS Endpoint">
-                <Input
-                    placeholder="ws://localhost:9944"
-                    overrides={{
-                        Input: {
-                            style: {
-                                fontFamily: 'monospace',
-                            },
-                        },
-                    }}
-                    value={endpoint}
-                    onChange={(e) => setEndpoint(e.currentTarget.value)}
-                ></Input>
-            </FormControl>
-            <FormControl label="Pruntime URL">
-                <Input
-                    placeholder="http://localhost:8000"
-                    overrides={{
-                        Input: {
-                            style: {
-                                fontFamily: 'monospace',
-                            },
-                        },
-                    }}
-                    value={pruntimeURL}
-                    onChange={(e) => setPruntimeURL(e.currentTarget.value)}
-                ></Input>
-            </FormControl>
-            <FormControl label="Contract Id">
-                <Input
-                    overrides={{
-                        Input: {
-                            style: {
-                                fontFamily: 'monospace',
-                            },
-                        },
-                    }}
-                    value={contractId}
-                    onChange={(e) =>
-                        setContractInfo((contractInfo) => ({
-                            ...contractInfo,
-                            contractId: e.currentTarget.value,
-                        }))
-                    }
-                ></Input>
-            </FormControl>
-
-            <Button disabled={!contractId} onClick={loadContract}>
-                Load Contract
-            </Button> 
-        </>
+        <Block>
+      <FormControl label="WS Endpoint">
+        <Input
+          placeholder="wss://poc5.phala.network/ws"
+          overrides={{
+            Input: {
+              style: {
+                fontFamily: 'monospace',
+              },
+            },
+          }}
+          value={endpoint}
+          onChange={(e) => setEndpoint(e.currentTarget.value)}
+        ></Input>
+      </FormControl>
+      <FormControl label="Pruntime URL">
+        <Input
+          placeholder="https://poc5.phala.network/tee-api-1"
+          overrides={{
+            Input: {
+              style: {
+                fontFamily: 'monospace',
+              },
+            },
+          }}
+          value={pruntimeURL}
+          onChange={(e) => setPruntimeURL(e.currentTarget.value)}
+        ></Input>
+      </FormControl>
+      <FormControl label="Contract Id">
+        <Input
+          overrides={{
+            Input: {
+              style: {
+                fontFamily: 'monospace',
+              },
+            },
+          }}
+          value={contractId}
+          onChange={(e) =>
+            setContractInfo((contractInfo) => ({
+              ...contractInfo,
+              contractId: e.currentTarget.value,
+            }))
+          }
+        ></Input>
+      </FormControl>
+      <Button disabled={!contractId} onClick={loadContract}>
+        Load Contract
+      </Button>
+    </Block>
     )
 }
 
