@@ -19,9 +19,7 @@ export default function Nav() {
         to = "/new-trial" >
         <
         label > New trial < /label> < /
-        Link > <
-        Link className = 'nav-link'
-        to = "/new-contract-chain" > < /Link> < /
+        Link > < /
         div >
 
         <

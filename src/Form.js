@@ -23,6 +23,8 @@ export default function FormPage() {
     const [certificateData, setCertificateData] = useState()
     const [api, setApi] = useState()
     const [contract, setContract] = useState()
+    const [buttonTextRaw, setButtonTextRaw] = useState()
+    const [buttonTextProcessed, setButtonTextProcessed] = useState()
     const [account] = useAtom(accountAtom)
     const [typeState, setType] = useState("fishers_exact_test")
     const [nameState, setName] = useState("")
@@ -136,16 +138,16 @@ export default function FormPage() {
         FileUploader accept = ".csv"
         onDrop = {
             ([event]) => {
+                setButtonTextRaw(event.name)
                 handleCSV(event, "raw");
             }
         }
         overrides = {
             {
-                HiddenInput: {
-                    style: ({ $theme }) => ({
-                        outline: `${$theme.colors.warning600} solid`,
-                        backgroundColor: $theme.colors.warning600
-                    })
+                ButtonComponent: {
+                    props: {
+                        endEnhancer: buttonTextRaw
+                    }
                 }
             }
         }
@@ -158,7 +160,17 @@ export default function FormPage() {
         FileUploader accept = ".csv"
         onDrop = {
             ([event]) => {
+                setButtonTextProcessed(event.name)
                 handleCSV(event, "processed");
+            }
+        }
+        overrides = {
+            {
+                ButtonComponent: {
+                    props: {
+                        endEnhancer: buttonTextProcessed
+                    }
+                }
             }
         }
         name = "file" /

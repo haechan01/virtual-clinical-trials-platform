@@ -22,9 +22,6 @@ function App() {
         /> <
         Route path = "/new-trial"
         element = { < FormPage / > }
-        /> <
-        Route path = "/new-contract-chain"
-        element = { < Resetcontract / > }
         /> < /
         Routes >
         <
