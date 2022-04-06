@@ -1,0 +1,19 @@
+.nav-links {
+    background-color: rgb(31, 29, 29);
+    min-height: 10vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    margin-right: 2rem;
+}
+
+nav {
+    position: relative;
+    width: 100%;
+}

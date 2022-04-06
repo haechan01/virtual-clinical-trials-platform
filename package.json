@@ -1,0 +1,63 @@
+{
+  "name": "trials",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@phala/sdk": "^0.3.0",
+    "@phala/typedefs": "^0.2.30",
+    "@polkadot/api": "^7.14.3",
+    "@polkadot/api-contract": "^7.14.3",
+    "@polkadot/extension": "^0.22.1",
+    "@polkadot/extension-dapp": "^0.42.9",
+    "@polkadot/extension-inject": "^0.42.9",
+    "@polkadot/util": "^8.7.1",
+    "@testing-library/jest-dom": "^5.16.3",
+    "@testing-library/react": "^12.1.4",
+    "@testing-library/user-event": "^13.5.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.2.4",
+    "babel-preset-env": "^1.7.0",
+    "baseui": "^10.12.1",
+    "formik": "^2.2.9",
+    "jotai": "^1.6.1",
+    "next": "^12.1.4",
+    "optics-ts": "^2.3.0",
+    "papaparse": "^5.3.2",
+    "protobufjs": "^6.11.2",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-notifications": "^1.7.3",
+    "react-router-dom": "^6.2.2",
+    "react-scripts": "5.0.0",
+    "stream": "^0.0.2",
+    "styletron-engine-atomic": "^1.4.8",
+    "styletron-react": "^6.0.2",
+    "web-vitals": "^2.1.4",
+    "webpack": "^5.71.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "postinstall": "npx patch-package"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
