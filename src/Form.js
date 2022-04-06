@@ -18,6 +18,7 @@ import { NotificationContainer, NotificationManager } from 'react-notifications'
 import Papa from 'papaparse';
 import ContractLoader from './components/ContractLoader.tsx';
 import AccountSelect from './components/AccountSelect.tsx';
+import { isInstanceOf } from '@polkadot/util';
 
 export default function FormPage() {
     const [certificateData, setCertificateData] = useState()
@@ -30,11 +31,14 @@ export default function FormPage() {
     const [nameState, setName] = useState("")
     const [threshold, setThreshold] = useState(0.05)
 
+    const [fileRawState, setFileRaw] = useState()
+    const [filePreprocessedState, setFilePreprocessed] = useState()
+
     useEffect(() => {
         setCertificateData(undefined)
     }, [account])
 
-    function handleCSV(file, fileType) {
+    function handleCSV(file, fileType, initialValues) {
         Papa.parse(file, {
             header: false,
             dynamicTyping: true,
@@ -42,11 +46,10 @@ export default function FormPage() {
                 var data = results.data;
 
                 if (fileType === "raw") {
-                    initialValues.file = data;
+                    setFileRaw(data);
                 } else {
-                    initialValues.file_preprocessed = data;
-                }
-                console.log(data);
+                    setFilePreprocessed(data);
+                };
             }
         });
     }
@@ -54,49 +57,61 @@ export default function FormPage() {
         trialName: nameState,
         testType: typeState,
         pValueThresh: threshold,
-        file: "",
-        file_preprocessed: ""
+        file: fileRawState,
+        file_preprocessed: filePreprocessedState
     }
 
     // what happens when user submits the form
     async function afterSubmit(values) {
+
         if (account && api) {
+
             try {
+
                 const signer = await getSigner(account)
-                console.log(signer)
 
                 // Save certificate data to state, or anywhere else you want like local storage
-                setCertificateData(
-                    await signCertificate({
-                        api,
-                        account,
-                        signer,
-                    })
-                )
-                NotificationManager.success('Certificate successfully signed', 'Certificate signage');
                 try {
-                    // set data conditions
-                    await contract.tx.new({}, values.pValueThresh * 100, values.testType)
-                        .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
-                    NotificationManager.success('Trial information uploaded successfully', 'Information Upload');
+                    setCertificateData(
+                        await signCertificate({
+                            api,
+                            account,
+                            signer,
+                        })
+                    )
+                    NotificationManager.success('Certificate successfully signed', 'Certificate signage');
                 } catch (e) {
-                    NotificationManager.error('Could not upload Trial information', 'Failed information upload', 5000);
+                    NotificationManager.error('Failed to sign', 'Failed sign', 5000);
                 }
+
+
+
+                // HERE
+                if (contract && certificateData) {
+                    const p = await contract.query.getPValue(certificateData, {})
+                    NotificationManager.success(`P obtained successfully ${p.toHuman()}`, 'p value obtained');
+                } else {
+                    console.log("either contract or certificate data no present") // THIS PRINTS
+                }
+
+
+
                 try {
                     // upload preprocessed data
-                    await contract.tx.upload_preprocessed({}, values.file_preprocessed)
+                    await contract.tx.upload_raw({}, values.file) 
+                        .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
+                    NotificationManager.success('Raw Data uploaded uccessfully', 'Preprocessed Data Upload');
+                } catch (e) {
+                    NotificationManager.error('Raw Data failed to upload', 'Failed Data Upload', 5000);
+                }
+
+                try {
+                    // upload preprocessed data
+                    await contract.tx.upload_preprocessed({}, values.file_preprocessed) 
                         .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
                     NotificationManager.success('Preprocessed Data uploaded uccessfully', 'Preprocessed Data Upload');
                 } catch (e) {
                     NotificationManager.error('Preprocessed Data failed to upload', 'Failed Data Upload', 5000);
-                }
-                try {
-                    // obtain p_value
-                    const received_p = await contract.query.get_p_value(certificateData, {});
-                    NotificationManager.info(`user p: ${values.pValueThresh}`, "Obtained p-value from form");
-                    NotificationManager.info(`received from blockchain: ${received_p}`, "P-value on-chain");
-                } catch (e) {
-                    NotificationManager.error('Failed to obtain on-chain p-value', 'Failed p-value retrieval', 5000);
                 }
                 try {
                     // obtain stat_test results
@@ -116,6 +131,7 @@ export default function FormPage() {
             alert("No defined account for use")
         }
     }
+
 
 
 
@@ -161,7 +177,8 @@ export default function FormPage() {
         onDrop = {
             ([event]) => {
                 setButtonTextProcessed(event.name)
-                handleCSV(event, "processed");
+                handleCSV(event, "processed")
+                console.log(initialValues);
             }
         }
         overrides = {
