@@ -55,7 +55,7 @@ const AccountSelect = (): JSX.Element => {
   return (
     <Block padding="0 20px" flex="0" marginBottom="20px">
       <FormControl
-        label = "Choose an Upload Account"
+        label = "Choose Polkadot Upload Account"
         disabled={error}
         overrides={{
           ControlContainer: {

@@ -164,7 +164,7 @@ export default function FormPage() {
         >
         <
         /FormControl> <
-        FormControl label = "Give your clinical trial a name" >
+        FormControl label = "Provide reference name for Clinical Trial" >
         <
         Textarea placeholder = "Trial Name"
         overrides = {
@@ -185,14 +185,14 @@ export default function FormPage() {
         onChange = { e => setType(e.currentTarget.value) }
         name = "Test Type"
         align = { ALIGN.horizontal }
-        label = "Choose the type of test " >
+        label = "Choose the type of applied statistical test " >
         <
         Radio value = "fishers_exact_test"
         description = "Default Statistical test"
         checked > Fisher 's Exact Test   < /Radio> <
         Radio value = "Difference of means test" > Difference of Means Test < /Radio> < /
         RadioGroup > <
-        FormControl label = "Choose the significance level threshold" >
+        FormControl label = "Choose significance level threshold" >
         <
         Input placeholder = "0.05"
         overrides = {
