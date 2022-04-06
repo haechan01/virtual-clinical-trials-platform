@@ -6,10 +6,10 @@ import { Button } from 'baseui/button';
 import { Textarea } from 'baseui/textarea';
 import accountAtom from './atoms/account.ts';
 import { getSigner } from './lib/polkadotExtension.ts';
-import { useFormik } from 'formik';
 import { FormControl } from 'baseui/form-control';
 import { Input } from 'baseui/input';
 import { Block } from 'baseui/block';
+import Upload from 'baseui/icon/upload';
 import './Form.css';
 import { FileUploader } from "baseui/file-uploader";
 import { RadioGroup, Radio, ALIGN } from 'baseui/radio';
@@ -23,7 +23,7 @@ export default function FormPage() {
     const [certificateData, setCertificateData] = useState()
     const [api, setApi] = useState()
     const [contract, setContract] = useState()
-    const account = useAtom(accountAtom)
+    const [account] = useAtom(accountAtom)
     const [typeState, setType] = useState("fishers_exact_test")
     const [nameState, setName] = useState("")
     const [threshold, setThreshold] = useState(0.05)
@@ -58,9 +58,10 @@ export default function FormPage() {
 
     // what happens when user submits the form
     async function afterSubmit(values) {
-        if ((account && api)) {
+        if (account && api) {
             try {
                 const signer = await getSigner(account)
+                console.log(signer)
 
                 // Save certificate data to state, or anywhere else you want like local storage
                 setCertificateData(
@@ -71,14 +72,6 @@ export default function FormPage() {
                     })
                 )
                 NotificationManager.success('Certificate successfully signed', 'Certificate signage');
-                try {
-                    // initialize contract 
-                    await contract.tx.default({})
-                        .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
-                    NotificationManager.success('Trial block created', 'Contract begin');
-                } catch (e) {
-                    NotificationManager.error('Could not create trial block', 'Failed block creation', 5000);
-                }
                 try {
                     // set data conditions
                     await contract.tx.new({}, values.pValueThresh * 100, values.testType)
@@ -142,9 +135,18 @@ export default function FormPage() {
         <
         FileUploader accept = ".csv"
         onDrop = {
-            (event) => {
-                console.log(event[0])
-                handleCSV(event[0], "raw");
+            ([event]) => {
+                handleCSV(event, "raw");
+            }
+        }
+        overrides = {
+            {
+                HiddenInput: {
+                    style: ({ $theme }) => ({
+                        outline: `${$theme.colors.warning600} solid`,
+                        backgroundColor: $theme.colors.warning600
+                    })
+                }
             }
         }
         name = "file" /
@@ -155,9 +157,8 @@ export default function FormPage() {
         <
         FileUploader accept = ".csv"
         onDrop = {
-            (event) => {
-                console.log(event[0])
-                handleCSV(event[0], "processed");
+            ([event]) => {
+                handleCSV(event, "processed");
             }
         }
         name = "file" /
@@ -211,19 +212,21 @@ export default function FormPage() {
         FormControl >
 
         <
-        Button type = 'submit' >
-        Submit <
-        /Button>< /
-        form > <
-        NotificationContainer / > < /Block ></div > ) : ( <
-        ContractLoader name = "Clinical Trial"
-        onLoad = {
-            ({ api, contract }) => {
-                setApi(api)
-                setContract(contract)
+        Button endEnhancer = {
+            () => < Upload size = { 24 }
+            />} type = 'submit' >
+            Submit <
+            /Button>< /
+            form > <
+            NotificationContainer / > < /Block ></div > ): ( <
+            ContractLoader name = "Clinical Trial"
+            onLoad = {
+                ({ api, contract }) => {
+                    setApi(api)
+                    setContract(contract)
+                }
             }
-        }
-        /> 
-    )
-}
-FormPage.title = 'Trial upload page';
+            /> 
+        )
+    }
+    FormPage.title = 'Trial upload page';
