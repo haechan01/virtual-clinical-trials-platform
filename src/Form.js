@@ -71,6 +71,14 @@ export default function FormPage() {
                 const signer = await getSigner(account)
 
                 // Save certificate data to state, or anywhere else you want like local storage
+                setCertificateData(
+                    await signCertificate({
+                        api,
+                        account,
+                        signer,
+                    })
+                )
+                NotificationManager.success('Certificate successfully signed', 'Certificate signage', 5000);
                 try {
                     setCertificateData(
                         await signCertificate({
@@ -95,7 +103,6 @@ export default function FormPage() {
                 }
 
 
-
                 try {
                     // upload preprocessed data
                     await contract.tx.upload_raw({}, values.file) 
@@ -106,12 +113,12 @@ export default function FormPage() {
                 }
 
                 try {
-                    // upload preprocessed data
-                    await contract.tx.upload_preprocessed({}, values.file_preprocessed) 
-                        .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
-                    NotificationManager.success('Preprocessed Data uploaded uccessfully', 'Preprocessed Data Upload');
+                    // obtain p_value
+                    const received_p = await contract.query.get_p_value(certificateData, {});
+                    NotificationManager.info(`user p: ${values.pValueThresh}`, "Obtained p-value from form", 5000);
+                    NotificationManager.info(`received from blockchain: ${received_p}`, "P-value on-chain", 5000);
                 } catch (e) {
-                    NotificationManager.error('Preprocessed Data failed to upload', 'Failed Data Upload', 5000);
+                    NotificationManager.error('Failed to obtain on-chain p-value', 'Failed p-value retrieval', 10000);
                 }
                 try {
                     // obtain stat_test results
@@ -122,10 +129,10 @@ export default function FormPage() {
                         alert("We do not have sufficient information to reject the null hypothesis");
                     }
                 } catch (e) {
-                    NotificationManager.error('Failed to obtain trial results', 'Failed result collection', 5000);
+                    NotificationManager.error('Failed to obtain Trial results', 'Failed result collection', 10000);
                 }
             } catch (err) {
-                NotificationManager.error(`${err}`, 'Failed to sign certificate', 5000);
+                NotificationManager.error(`${err}`, 'Failed to sign certificate', 10000);
             }
         } else {
             alert("No defined account for use")
