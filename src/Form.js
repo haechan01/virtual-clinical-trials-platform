@@ -73,14 +73,14 @@ export default function FormPage() {
                         signer,
                     })
                 )
-                NotificationManager.success('Certificate successfully signed', 'Certificate signage');
+                NotificationManager.success('Certificate successfully signed', 'Certificate signage', 5000);
                 try {
                     // set data conditions
                     await contract.tx.new({}, values.pValueThresh * 100, values.testType)
                         .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
                     NotificationManager.success('Trial information uploaded successfully', 'Information Upload');
                 } catch (e) {
-                    NotificationManager.error('Could not upload Trial information', 'Failed information upload', 5000);
+                    NotificationManager.error('Could not upload Trial information', 'Failed information upload', 10000);
                 }
                 try {
                     // upload preprocessed data
@@ -88,15 +88,15 @@ export default function FormPage() {
                         .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
                     NotificationManager.success('Preprocessed Data uploaded uccessfully', 'Preprocessed Data Upload');
                 } catch (e) {
-                    NotificationManager.error('Preprocessed Data failed to upload', 'Failed Data Upload', 5000);
+                    NotificationManager.error('Preprocessed Data failed to upload', 'Failed Data Upload', 10000);
                 }
                 try {
                     // obtain p_value
                     const received_p = await contract.query.get_p_value(certificateData, {});
-                    NotificationManager.info(`user p: ${values.pValueThresh}`, "Obtained p-value from form");
-                    NotificationManager.info(`received from blockchain: ${received_p}`, "P-value on-chain");
+                    NotificationManager.info(`user p: ${values.pValueThresh}`, "Obtained p-value from form", 5000);
+                    NotificationManager.info(`received from blockchain: ${received_p}`, "P-value on-chain", 5000);
                 } catch (e) {
-                    NotificationManager.error('Failed to obtain on-chain p-value', 'Failed p-value retrieval', 5000);
+                    NotificationManager.error('Failed to obtain on-chain p-value', 'Failed p-value retrieval', 10000);
                 }
                 try {
                     // obtain stat_test results
@@ -107,10 +107,10 @@ export default function FormPage() {
                         alert("We do not have sufficient information to reject the null hypothesis");
                     }
                 } catch (e) {
-                    NotificationManager.error('Failed to obtain trial results', 'Failed result collection', 5000);
+                    NotificationManager.error('Failed to obtain Trial results', 'Failed result collection', 10000);
                 }
             } catch (err) {
-                NotificationManager.error(`${err}`, 'Failed to sign certificate', 5000);
+                NotificationManager.error(`${err}`, 'Failed to sign certificate', 10000);
             }
         } else {
             alert("No defined account for use")
