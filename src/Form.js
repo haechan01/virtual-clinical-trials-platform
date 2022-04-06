@@ -2,7 +2,8 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { signCertificate } from '@phala/sdk';
 import { useAtom } from 'jotai';
-import { Button } from 'baseui/button'
+import { Button } from 'baseui/button';
+import { Textarea } from 'baseui/textarea';
 import accountAtom from './atoms/account.ts';
 import { getSigner } from './lib/polkadotExtension.ts';
 import { useFormik } from 'formik';
@@ -23,6 +24,9 @@ export default function FormPage() {
     const [api, setApi] = useState()
     const [contract, setContract] = useState()
     const account = useAtom(accountAtom)
+    const [typeState, setType] = useState("fishers_exact_test")
+    const [nameState, setName] = useState("")
+    const [threshold, setThreshold] = useState(0.05)
 
     useEffect(() => {
         setCertificateData(undefined)
@@ -36,99 +40,87 @@ export default function FormPage() {
                 var data = results.data;
 
                 if (fileType === "raw") {
-                    formik.values.file = data;
+                    initialValues.file = data;
                 } else {
-                    formik.values.file_preprocessed = data;
+                    initialValues.file_preprocessed = data;
                 }
                 console.log(data);
             }
         });
     }
+    let initialValues = {
+        trialName: nameState,
+        testType: typeState,
+        pValueThresh: threshold,
+        file: "",
+        file_preprocessed: ""
+    }
 
-    const formik = useFormik({
-        initialValues: {
-            trialName: "",
-            testType: "fishers_exact_test",
-            pValueThresh: 0.05,
-            file: "",
-            file_preprocessed: ""
-        },
+    // what happens when user submits the form
+    async function afterSubmit(values) {
+        if ((account && api)) {
+            try {
+                const signer = await getSigner(account)
 
-        handleChange: (event) => {
-            // get name and value from event.target
-            // is the same as const name = event.target.name
-            const { name, value } = event.target
-                // make sure you have name prop in 
-                // your textfield and it is same name as your initial state
-            formik.setFieldValue(name, value) // this call formik to set your value
-        },
-
-        // what happens when user submits the form
-        onSubmit: async(values) => {
-            if ((account && api)) {
+                // Save certificate data to state, or anywhere else you want like local storage
+                setCertificateData(
+                    await signCertificate({
+                        api,
+                        account,
+                        signer,
+                    })
+                )
+                NotificationManager.success('Certificate successfully signed', 'Certificate signage');
                 try {
-                    const signer = await getSigner(account)
-
-                    // Save certificate data to state, or anywhere else you want like local storage
-                    setCertificateData(
-                        await signCertificate({
-                            api,
-                            account,
-                            signer,
-                        })
-                    )
-                    NotificationManager.success('Certificate successfully signed', 'Certificate signage');
-                    try {
-                        // initialize contract 
-                        await contract.tx.default({})
-                            .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
-                        NotificationManager.success('Trial block created', 'Contract begin');
-                    } catch (e) {
-                        NotificationManager.error('Could not create trial block', 'Failed block creation', 5000);
-                    }
-                    try {
-                        // set data conditions
-                        await contract.tx.new({}, values.pValueThresh * 100, values.testType)
-                            .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
-                        NotificationManager.success('Trial information uploaded successfully', 'Information Upload');
-                    } catch (e) {
-                        NotificationManager.error('Could not upload Trial information', 'Failed information upload', 5000);
-                    }
-                    try {
-                        // upload preprocessed data
-                        await contract.tx.upload_preprocessed({}, values.file_preprocessed)
-                            .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
-                        NotificationManager.success('Preprocessed Data uploaded uccessfully', 'Preprocessed Data Upload');
-                    } catch (e) {
-                        NotificationManager.error('Preprocessed Data failed to upload', 'Failed Data Upload', 5000);
-                    }
-                    try {
-                        // obtain p_value
-                        const received_p = await contract.query.get_p_value(certificateData, {});
-                        NotificationManager.info(`user p: ${values.pValueThresh}`, "Obtained p-value from form");
-                        NotificationManager.info(`received from blockchain: ${received_p}`, "P-value on-chain");
-                    } catch (e) {
-                        NotificationManager.error('Failed to obtain on-chain p-value', 'Failed p-value retrieval', 5000);
-                    }
-                    try {
-                        // obtain stat_test results
-                        const received_result = await contract.query.get_result(certificateData, {});
-                        if (received_result) {
-                            alert("We have sufficient information to reject the null hypothesis");
-                        } else {
-                            alert("We do not have sufficient information to reject the null hypothesis");
-                        }
-                    } catch (e) {
-                        NotificationManager.error('Failed to obtain trial results', 'Failed result collection', 5000);
-                    }
-                } catch (err) {
-                    NotificationManager.error(`${err}`, 'Failed to sign certificate', 5000);
+                    // initialize contract 
+                    await contract.tx.default({})
+                        .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
+                    NotificationManager.success('Trial block created', 'Contract begin');
+                } catch (e) {
+                    NotificationManager.error('Could not create trial block', 'Failed block creation', 5000);
                 }
-            } else {
-                alert("No defined account for use")
+                try {
+                    // set data conditions
+                    await contract.tx.new({}, values.pValueThresh * 100, values.testType)
+                        .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
+                    NotificationManager.success('Trial information uploaded successfully', 'Information Upload');
+                } catch (e) {
+                    NotificationManager.error('Could not upload Trial information', 'Failed information upload', 5000);
+                }
+                try {
+                    // upload preprocessed data
+                    await contract.tx.upload_preprocessed({}, values.file_preprocessed)
+                        .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
+                    NotificationManager.success('Preprocessed Data uploaded uccessfully', 'Preprocessed Data Upload');
+                } catch (e) {
+                    NotificationManager.error('Preprocessed Data failed to upload', 'Failed Data Upload', 5000);
+                }
+                try {
+                    // obtain p_value
+                    const received_p = await contract.query.get_p_value(certificateData, {});
+                    NotificationManager.info(`user p: ${values.pValueThresh}`, "Obtained p-value from form");
+                    NotificationManager.info(`received from blockchain: ${received_p}`, "P-value on-chain");
+                } catch (e) {
+                    NotificationManager.error('Failed to obtain on-chain p-value', 'Failed p-value retrieval', 5000);
+                }
+                try {
+                    // obtain stat_test results
+                    const received_result = await contract.query.get_result(certificateData, {});
+                    if (received_result) {
+                        alert("We have sufficient information to reject the null hypothesis");
+                    } else {
+                        alert("We do not have sufficient information to reject the null hypothesis");
+                    }
+                } catch (e) {
+                    NotificationManager.error('Failed to obtain trial results', 'Failed result collection', 5000);
+                }
+            } catch (err) {
+                NotificationManager.error(`${err}`, 'Failed to sign certificate', 5000);
             }
+        } else {
+            alert("No defined account for use")
         }
-    });
+    }
 
 
 
@@ -139,7 +131,7 @@ export default function FormPage() {
         form onSubmit = {
             (e) => {
                 e.preventDefault()
-                formik.handleSubmit()
+                afterSubmit(initialValues)
             }
         }
         className = "form-container" >
@@ -174,7 +166,7 @@ export default function FormPage() {
         /FormControl> <
         FormControl label = "Give your clinical trial a name" >
         <
-        Input placeholder = "Trial Name"
+        Textarea placeholder = "Trial Name"
         overrides = {
             {
                 Input: {
@@ -184,14 +176,13 @@ export default function FormPage() {
                 },
             }
         }
-        value = { formik.values.trialName }
-        type = 'text'
-        onChange = { formik.handleChange }
+        value = { initialValues.trialName }
+        onChange = { e => setName(e.currentTarget.value) }
         />< /
         FormControl >
         <
-        RadioGroup value = { formik.values.testType }
-        onChange = { formik.handleChange }
+        RadioGroup value = { initialValues.testType }
+        onChange = { e => setType(e.currentTarget.value) }
         name = "Test Type"
         align = { ALIGN.horizontal }
         label = "Choose the type of test " >
@@ -213,9 +204,9 @@ export default function FormPage() {
                 },
             }
         }
-        value = { formik.values.pValueThresh }
+        value = { initialValues.pValueThresh }
         type = 'number'
-        onChange = { formik.handleChange }
+        onChange = { e => setThreshold(e.currentTarget.value) }
         />< /
         FormControl >
 
