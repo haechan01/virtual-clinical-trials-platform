@@ -223,7 +223,15 @@ mod clinical_trial_data {
         #[ink::test]
         fn upload_all_works() {
             
-            let sample: Vec<(u128, String, String )> = vec![(1, "Treatment", "Yes"), (2, "Treatment", "Yes"), (3, "Treatment", "Yes"), (4, "Treatment", "No"), (5, "Treatment", "No"), (6, "Treatment", "No"), (7, "Treatment", "No"), (8, "Treatment", "No"), (9, "Treatment", "No"), (10, "Treatment", "No"),(111, "Treatment", "No"), (112, "Treatment", "No"), (113, "Treatment", "No"), (114, "Treatment", "No"), (115, "Treatment", "No"),(431, "Placebo", "No"), (432, "Placebo", "No"), (433, "Placebo", "No"), (434, "Placebo", "No"), (435, "Placebo", "No"), (436, "Placebo", "No"), (437, "Placebo", "No"), (438, "Placebo", "No"), (439, "Placebo", "No"), (440, "Placebo", "No")]
+            let sample: Vec<(u128, String, String )> = vec![(1, "Treatment", "Yes"), (2, "Treatment", "Yes"), (3, "Treatment", "Yes"), 
+            (4, "Treatment", "No"), (5, "Treatment", "No"), (6, "Treatment", "No"), 
+            (7, "Treatment", "No"), (8, "Treatment", "No"), (9, "Treatment", "No"), 
+            (10, "Treatment", "No"),(111, "Treatment", "No"), (112, "Treatment", "No"), 
+            (113, "Treatment", "No"), (114, "Treatment", "No"), (115, "Treatment", "No"),
+            (431, "Placebo", "No"), (432, "Placebo", "No"), (433, "Placebo", "No"), 
+            (434, "Placebo", "No"), (435, "Placebo", "No"), (436, "Placebo", "No"), 
+            (437, "Placebo", "No"), (438, "Placebo", "No"), (439, "Placebo", "No"), 
+            (440, "Placebo", "No")]
                 .iter()
                 .map(|x| (x.0, x.1.to_string(), x.2.to_string()))
                 .collect::<Vec<(u128, String, String)>>();
