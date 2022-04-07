@@ -43,7 +43,7 @@ export default function FormPage() {
             header: false,
             dynamicTyping: true,
             complete: function(results) {
-                var data = results.data.slice(1);
+                const data = results.data.slice(1);
 
                 if (fileType === "raw") {
                     setFileRaw(data);
@@ -78,21 +78,40 @@ export default function FormPage() {
                 NotificationManager.success('Certificate successfully signed', 'Certificate signage', 5000);
                 try {
                     // upload preprocessed data
-                    await contract.tx.uploadAllPreprocessed({}, api.createType('Vec<Vec<Text>>', values.file_preprocessed))
+                    await contract.tx.uploadAllPreprocessed({}, api.createType('Vec<(String, String, String)>', values.file_preprocessed))
                         .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
-                    NotificationManager.success('Preprocessed Data uploaded uccessfully', 'Preprocessed Data Upload');
+                    NotificationManager.success('Preprocessed Data uploaded Successfully', 'Preprocessed Data Upload');
                 } catch (e) {
                     console.log(e);
                     NotificationManager.error('Preprocessed Data failed to upload', 'Failed Data Upload', 10000);
                 }
                 try {
+                    // upload raw data
+                    await contract.tx.uploadAllRaw({}, api.createType('Vec<(String, String, String)>', values.file))
+                        .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
+                    NotificationManager.success('Raw Data uploaded Successfully', 'Raw Data Upload');
+                } catch (e) {
+                    console.log(e);
+                    NotificationManager.error('Raw Data failed to upload', 'Failed Data Upload', 10000);
+                }
+                try {
                     // obtain p_value
-                    const { received_p } = await contract.query.getPValue(certificate, {});
+                    const received_p = await contract.query.getPValue(certificate, {});
                     NotificationManager.info(`user p: ${values.pValueThresh}`, "Obtained p-value from form", 5000);
+                    console.log(received_p.output.toHuman());
                     NotificationManager.info(`received from blockchain: ${received_p[0]/received_p[1]}`, "P-value on-chain", 5000);
                 } catch (e) {
                     console.log(e);
                     NotificationManager.error('Failed to obtain on-chain p-value', 'Failed p-value retrieval', 10000);
+                }
+                try {
+                    // upload preprocessed data
+                    const downloaded_raw = await contract.query.downloadRaw(certificate, {}) // injected signer object from polkadot extension??
+                    console.log(downloaded_raw.output.toHuman())
+                    NotificationManager.success('Raw Data downloaded successfully', 'Raw Data Download');
+                } catch (e) {
+                    console.log(e);
+                    NotificationManager.error('Raw Data failed to download', 'Failed Data Download', 10000);
                 }
                 try {
                     // obtain stat_test results
