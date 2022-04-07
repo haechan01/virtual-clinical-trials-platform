@@ -1,7 +1,7 @@
 Patient No.,Group,Hospitalized?
 1,Treatment,Yes
-2,Treatment,No
-3,Treatment,No
+2,Treatment,Yes
+3,Treatment,Yes
 4,Treatment,No
 5,Treatment,No
 6,Treatment,No
@@ -14,13 +14,13 @@ Patient No.,Group,Hospitalized?
 13,Treatment,No
 14,Treatment,No
 15,Treatment,No
-16,Placebo,Yes
-17,Placebo,Yes
-18,Placebo,Yes
-19,Placebo,Yes
-20,Placebo,Yes
-21,Placebo,Yes
-22,Placebo,Yes
+16,Placebo,No
+17,Placebo,No
+18,Placebo,No
+19,Placebo,No
+20,Placebo,No
+21,Placebo,No
+22,Placebo,No
 23,Placebo,No
 24,Placebo,No
 25,Placebo,No
