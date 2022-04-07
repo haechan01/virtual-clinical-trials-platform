@@ -23,7 +23,7 @@ mod clinical_trial_data {
         p_thresh: u128, // i.e. ink doesn't allow for float, use significant figure multiplier method
         stat_test: String, // i.e. fishers_exact_test
         result: bool, // true for significant result, i.e. < p-value, false for insignificant, i.e. > p-value
-        p_value: Vec<u128, u128> // resulting p   
+        p_value: Vec<u128> // resulting p   
     }
 
     impl ClinicalTrialData {
@@ -207,8 +207,8 @@ mod clinical_trial_data {
 
         // gets p-value result
         #[ink(message)]
-        pub fn get_p_value(&self) -> u128 {
-            self.p_value
+        pub fn get_p_value(&self) -> Vec<u128> {
+            self.p_value.clone()
         }
     }
 
@@ -267,8 +267,8 @@ mod clinical_trial_data {
             assert!(research.data_summary.get(&String::from("Placebo Negative")).unwrap() == 10);
             
             // test statistical test
+            ink_env::debug_println!("p-value: {:?}", research.p_value);
             assert!(research.result == true);
-            ink_env::debug_println!("is result significant: {}", research.result);
         }
 
         #[ink::test]
@@ -325,8 +325,8 @@ mod clinical_trial_data {
             assert!(research.data_summary.get(&String::from("Placebo Negative")).unwrap() == 10);
             
             // test statistical test
+            ink_env::debug_println!("p-value: {:?}", research.p_value);
             assert!(research.result == true);
-            ink_env::debug_println!("is result significant: {}", research.result);
         }
     }
 }
