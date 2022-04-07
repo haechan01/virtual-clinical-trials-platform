@@ -197,7 +197,7 @@ mod clinical_trial_data {
         pub fn hypergeom_cdf(&self, population: u128, cured: u128, treatment: u128, mut observed: u128) -> u128 {
             let mut hypergeom_sum: u128 = 0;
             while observed <= treatment{
-                hypergeom_sum += self.binomial(treatment, observed) * self.binomial(population-treatment, cured - &observed);
+                hypergeom_sum += self.binomial(treatment, observed) * self.binomial(population-treatment, cured - observed);
                 observed += 1;
             }
             hypergeom_sum

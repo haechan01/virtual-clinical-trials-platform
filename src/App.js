@@ -33,11 +33,10 @@ const Home = () => {
         div >
         <
         h1 >
-        Welcome to the Clinical Trial Platform use -
-        case for Phala Networks <
+                        Welcome to the Clinical Trial Data Platform secured by Phala Networks <
         /h1>
-        This is the data upload platform aimed at providing a secure, immutable platform
-        for your clinical services.Click "New Trial"
+                        This is the data upload platform to provide a secure, immutable data framework
+                        for your clinical trial studies. Click "New Trial"
         to get started. < /
         div >
     )
