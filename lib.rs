@@ -9,6 +9,7 @@ mod clinical_trial_data {
     use ink_prelude::vec::Vec;
     use ink_storage::Mapping;
     use ink_storage::traits::SpreadAllocate;
+    use ink_prelude::vec; 
 
     #[ink(storage)]
     #[derive(SpreadAllocate)]
