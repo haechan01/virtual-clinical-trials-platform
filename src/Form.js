@@ -81,10 +81,10 @@ export default function FormPage() {
             if (contract && certificate) {
                 console.log("GETTING P-VALUE")
                 try {
-                    const { p } = await contract.query.get(certificate, {})
-                    console.log(p.toHuman())
+                    const { output } = await contract.query.getPValue(certificate, {})
+                    console.log(JSON.stringify(output?.toHuman()))
                     console.log("P-VALUE SUCCESS")
-                    NotificationManager.success(`P obtained successfully ${p.toHuman()}`, 'p value obtained');
+                    NotificationManager.success(`P obtained successfully}`, 'p value obtained');
                 } catch (e) {
                     console.log(e)
                 }
@@ -95,8 +95,6 @@ export default function FormPage() {
         } else {
             alert("No defined account for use")
         }
-
-
 
             // try {
 

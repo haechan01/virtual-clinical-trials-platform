@@ -19,6 +19,8 @@
     "babel-loader": "^8.2.4",
     "babel-preset-env": "^1.7.0",
     "baseui": "^10.12.1",
+    "buffer": "^6.0.3",
+    "cipher-base": "^1.0.4",
     "formik": "^2.2.9",
     "jotai": "^1.6.1",
     "next": "^12.1.4",
@@ -30,18 +32,21 @@
     "react-notifications": "^1.7.3",
     "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
+    "readable-stream": "^3.6.0",
     "stream": "^0.0.2",
     "styletron-engine-atomic": "^1.4.8",
     "styletron-react": "^6.0.2",
     "web-vitals": "^2.1.4",
     "webpack": "^5.71.0",
-    "cipher-base": "^1.0.4"
+    "process": "^0.11.10",
+    "stream-browserify": "^3.0.0",
+    "react-app-rewired": "^2.2.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-app-rewired eject",
     "postinstall": "npx patch-package"
   },
   "eslintConfig": {
@@ -61,5 +66,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@webpack-cli/generators": "^2.4.2"
   }
 }
