@@ -11,8 +11,8 @@ import { atomWithStorage } from 'jotai/utils'
 import { focusAtom } from 'jotai/optics'
 import { useRef, VFC } from "react"
 import ArrowRight from 'baseui/icon/arrow-right';
-import useIsClient from '../hooks/useIsClient'
-import { createApi } from '../lib/polkadotApi'
+import useIsClient from '../hooks/useIsClient.ts'
+import { createApi } from '../lib/polkadotApi.ts'
 
 const endpointAtom = atomWithStorage<string>(
     'atom:endpoint',

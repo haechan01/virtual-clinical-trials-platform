@@ -78,7 +78,7 @@ export default function FormPage() {
                 NotificationManager.success('Certificate successfully signed', 'Certificate signage', 5000);
                 try {
                     // upload preprocessed data
-                    await contract.tx.uploadPreprocessed({}, api.createType('Vec<Vec<Text>>', values.file_preprocessed))
+                    await contract.tx.uploadAllPreprocessed({}, api.createType('Vec<Vec<Text>>', values.file_preprocessed))
                         .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
                     NotificationManager.success('Preprocessed Data uploaded uccessfully', 'Preprocessed Data Upload');
                 } catch (e) {
