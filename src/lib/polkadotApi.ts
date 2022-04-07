@@ -12,7 +12,7 @@ export const createApi = async (endpoint: string): Promise<ApiPromise> => {
             provider: wsProvider,
             types: {
                 ...khalaDev,
-                ...phalaSDKTypes,
+                ...phalaSDKTypes
             },
         })
         await api.isReady;

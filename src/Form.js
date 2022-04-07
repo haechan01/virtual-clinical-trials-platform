@@ -38,7 +38,7 @@ export default function FormPage() {
             header: false,
             dynamicTyping: true,
             complete: function(results) {
-                var data = results.data;
+                var data = results.data.slice(1);
 
                 if (fileType === "raw") {
                     setFileRaw(data);
@@ -68,44 +68,40 @@ export default function FormPage() {
                     account,
                     signer,
                 });
-                console.log(account.address, { signer })
+                console.log(contract)
                 NotificationManager.success('Certificate successfully signed', 'Certificate signage', 5000);
                 try {
-                    // set data conditions
-                    await contract.tx.new({}, values.pValueThresh * 100, values.testType)
-                        .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
-                    NotificationManager.success('Trial information uploaded successfully', 'Information Upload');
-                } catch (e) {
-                    NotificationManager.error('Could not upload Trial information', 'Failed information upload', 10000);
-                }
-                try {
                     // upload preprocessed data
-                    await contract.tx.upload_preprocessed({}, values.file_preprocessed)
+                    await contract.tx.uploadPreprocessed({}, api.createType('Vec<Vec<Text>>', values.file_preprocessed))
                         .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
                     NotificationManager.success('Preprocessed Data uploaded uccessfully', 'Preprocessed Data Upload');
                 } catch (e) {
+                    console.log(e);
                     NotificationManager.error('Preprocessed Data failed to upload', 'Failed Data Upload', 10000);
                 }
                 try {
                     // obtain p_value
-                    const received_p = await contract.query.get_p_value(certificate, {});
+                    const { received_p } = await contract.query.getPValue(certificate, {});
                     NotificationManager.info(`user p: ${values.pValueThresh}`, "Obtained p-value from form", 5000);
-                    NotificationManager.info(`received from blockchain: ${received_p}`, "P-value on-chain", 5000);
+                    NotificationManager.info(`received from blockchain: ${received_p.toHuman()}`, "P-value on-chain", 5000);
                 } catch (e) {
+                    console.log(e);
                     NotificationManager.error('Failed to obtain on-chain p-value', 'Failed p-value retrieval', 10000);
                 }
                 try {
                     // obtain stat_test results
-                    const received_result = await contract.query.get_result(certificate, {});
-                    if (received_result) {
+                    const { received_result } = await contract.query.getResult(certificate, {});
+                    if (received_result.toHuman()) {
                         alert("We have sufficient information to reject the null hypothesis");
                     } else {
                         alert("We do not have sufficient information to reject the null hypothesis");
                     }
                 } catch (e) {
+                    console.log(e);
                     NotificationManager.error('Failed to obtain Trial results', 'Failed result collection', 10000);
                 }
             } catch (err) {
+                console.log(err);
                 NotificationManager.error(`${err}`, 'Failed to sign certificate', 10000);
             }
         } else {
