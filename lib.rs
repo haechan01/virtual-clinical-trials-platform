@@ -24,7 +24,7 @@ mod clinical_trial_data {
         p_thresh: u128, // i.e. ink doesn't allow for float, use significant figure multiplier method
         stat_test: String, // i.e. fishers_exact_test
         result: bool, // true for significant result, i.e. < p-value, false for insignificant, i.e. > p-value
-        p_value: Vec<u128, u128> // resulting p   
+        p_value: Vec<u128> // resulting p   
     }
 
     impl ClinicalTrialData {
@@ -93,6 +93,24 @@ mod clinical_trial_data {
         #[ink(message)]
         pub fn download_raw(&self) -> Vec<(String, String, String)>{
             self.raw_records.clone()
+        }
+
+        // returns records from contract storage to frontend (access: contract owner, i.e. researcher)
+        #[ink(message)]
+        pub fn download_preprocessed(&self) -> Vec<(String, String, String)>{
+            self.preprocessed_records.clone()
+        }
+
+        // returns records from contract storage to frontend (access: contract owner, i.e. researcher)
+        #[ink(message)]
+        pub fn clear_raw(&mut self) {
+            self.raw_records.clear();
+        }
+
+        // returns records from contract storage to frontend (access: contract owner, i.e. researcher)
+        #[ink(message)]
+        pub fn clear_preprocessed(&mut self) {
+            self.preprocessed_records.clear();
         }
 
         // uploads preprocessed record to contract storage from frontend and returns stat test results 
@@ -256,6 +274,10 @@ mod clinical_trial_data {
             // test raw records download
             let download = research.download_raw();
             assert!(download == research.raw_records);
+
+            // clear raw records
+            research.clear_raw();
+            assert!(research.raw_records.len() == 0);
 
             // test preprocessed records upload 
             research.upload_all_preprocessed(sample.clone());

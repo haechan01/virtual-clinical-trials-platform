@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0x921f953e3c4756de68c4c770ff99dd6ceb41d66dcf668c3d21e0be373eff54f7",
+    "hash": "0xc0ba1f5dc51106eb0b47090282e7274454fa337b43b8540c247df9c79fd64178",
     "language": "ink! 3.0.0",
     "compiler": "rustc 1.61.0-nightly"
   },
@@ -186,6 +186,38 @@
             "type": 0
           },
           "selector": "0xa09a9c80"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "download_preprocessed",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 0
+          },
+          "selector": "0xb2f69a3b"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "clear_raw",
+          "mutates": true,
+          "payable": false,
+          "returnType": null,
+          "selector": "0x948fcc56"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "clear_preprocessed",
+          "mutates": true,
+          "payable": false,
+          "returnType": null,
+          "selector": "0x388801ed"
         },
         {
           "args": [
