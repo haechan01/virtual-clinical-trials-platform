@@ -2,7 +2,8 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { signCertificate } from '@phala/sdk';
 import { useAtom } from 'jotai';
-import { Button } from 'baseui/button';
+import { ButtonGroup } from "baseui/button-group";
+import { Button, SHAPE } from 'baseui/button';
 import { Textarea } from 'baseui/textarea';
 import accountAtom from './atoms/account.ts';
 import { getSigner } from './lib/polkadotExtension.ts';
@@ -19,6 +20,7 @@ import { NotificationContainer, NotificationManager } from 'react-notifications'
 import Papa from 'papaparse';
 import ContractLoader from './components/ContractLoader.tsx';
 import AccountSelect from './components/AccountSelect.tsx';
+import Check from 'baseui/icon/check';
 
 export default function FormPage() {
     const [certificateData, setCertificateData] = useState()
@@ -30,8 +32,8 @@ export default function FormPage() {
     const [typeState, setType] = useState("fishers_exact_test")
     const [nameState, setName] = useState("")
     const [threshold, setThreshold] = useState(0.05)
-    const [fileRawState, setFileRaw] = useState("")
-    const [filePreprocessedState, setFilePreprocessed] = useState("")
+    const [fileRawState, setFileRaw] = useState()
+    const [filePreprocessedState, setFilePreprocessed] = useState()
 
 
     useEffect(() => {
@@ -74,32 +76,37 @@ export default function FormPage() {
                     account,
                     signer,
                 });
+                setCertificateData(certificate);
                 console.log(contract)
                 NotificationManager.success('Certificate successfully signed', 'Certificate signage', 5000);
-                try {
-                    // upload preprocessed data
-                    await contract.tx.uploadAllPreprocessed({}, api.createType('Vec<(String, String, String)>', values.file_preprocessed))
-                        .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
-                    NotificationManager.success('Preprocessed Data uploaded Successfully', 'Preprocessed Data Upload');
-                } catch (e) {
-                    console.log(e);
-                    NotificationManager.error('Preprocessed Data failed to upload', 'Failed Data Upload', 10000);
+                if (values.file_preprocessed) {
+                    try {
+                        // upload preprocessed data
+                        await contract.tx.uploadAllPreprocessed({}, api.createType('Vec<(String, String, String)>', values.file_preprocessed))
+                            .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
+                        NotificationManager.success('Preprocessed Data uploaded Successfully', 'Preprocessed Data Upload');
+                    } catch (e) {
+                        console.log(e);
+                        NotificationManager.error('Preprocessed Data failed to upload', 'Failed Data Upload', 10000);
+                    }
                 }
-                try {
-                    // upload raw data
-                    await contract.tx.uploadAllRaw({}, api.createType('Vec<(String, String, String)>', values.file))
-                        .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
-                    NotificationManager.success('Raw Data uploaded Successfully', 'Raw Data Upload');
-                } catch (e) {
-                    console.log(e);
-                    NotificationManager.error('Raw Data failed to upload', 'Failed Data Upload', 10000);
+                if (values.file) {
+                    try {
+                        // upload raw data
+                        await contract.tx.uploadAllRaw({}, api.createType('Vec<(String, String, String)>', values.file))
+                            .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
+                        NotificationManager.success('Raw Data uploaded Successfully', 'Raw Data Upload');
+                    } catch (e) {
+                        console.log(e);
+                        NotificationManager.error('Raw Data failed to upload', 'Failed Data Upload', 10000);
+                    }
                 }
                 try {
                     // obtain p_value
                     const received_p = await contract.query.getPValue(certificate, {});
-                    NotificationManager.info(`user p: ${values.pValueThresh}`, "Obtained p-value from form", 5000);
+                    NotificationManager.info(`user p: ${values.pValueThresh}`, "Submitted p-Threshold", 5000);
                     console.log(received_p.output.toHuman());
-                    NotificationManager.info(`received from blockchain: ${received_p[0]/received_p[1]}`, "P-value on-chain", 5000);
+                    NotificationManager.info(`received from blockchain: ${parseInt(received_p[0])/parseInt(received_p[1])}`, "P-value on-chain", 5000);
                 } catch (e) {
                     console.log(e);
                     NotificationManager.error('Failed to obtain on-chain p-value', 'Failed p-value retrieval', 10000);
@@ -113,24 +120,26 @@ export default function FormPage() {
                     console.log(e);
                     NotificationManager.error('Raw Data failed to download', 'Failed Data Download', 10000);
                 }
-                try {
-                    // obtain stat_test results
-                    const { received_result } = await contract.query.getResult(certificate, {});
-                    if (received_result) {
-                        alert("We have sufficient information to reject the null hypothesis");
-                    } else {
-                        alert("We do not have sufficient information to reject the null hypothesis");
-                    }
-                } catch (e) {
-                    console.log(e);
-                    NotificationManager.error('Failed to obtain Trial results', 'Failed result collection', 10000);
-                }
             } catch (err) {
                 console.log(err);
                 NotificationManager.error(`${err}`, 'Failed to sign certificate', 10000);
             }
         } else {
             alert("No defined account for use")
+        }
+    }
+    async function obtainResults() {
+        try {
+            // obtain stat_test results
+            const { received_result } = await contract.query.getResult(certificateData, {});
+            if (received_result) {
+                alert("We have sufficient information to reject the null hypothesis");
+            } else {
+                alert("We do not have sufficient information to reject the null hypothesis");
+            }
+        } catch (e) {
+            console.log(e);
+            NotificationManager.error('Failed to obtain Trial results', 'Failed result collection', 10000);
         }
     }
 
@@ -140,13 +149,7 @@ export default function FormPage() {
     return contract ? ( <
         div className = "container" > <
         Block > <
-        form onSubmit = {
-            (e) => {
-                e.preventDefault()
-                afterSubmit(initialValues)
-            }
-        }
-        className = "form-container" >
+        form className = "form-container" >
         <
         AccountSelect / >
         <
@@ -239,13 +242,30 @@ export default function FormPage() {
         onChange = { e => setThreshold(e.currentTarget.value) }
         />< /
         FormControl >
-
+        <
+        ButtonGroup align = { ALIGN.horizontal } >
         <
         Button endEnhancer = {
             () => < Upload size = { 24 }
-            />} type = 'submit' >
-            Submit <
-            /Button>< /
+            />} onClick = {
+            (e) => {
+                e.preventDefault()
+                afterSubmit(initialValues)
+            }
+        } >
+        Submit <
+        /Button><
+        Button onClick = {
+            (e) => {
+                e.preventDefault()
+                obtainResults()
+            }
+        }
+        endEnhancer = {
+            () => < Check size = { 24 }
+            />} shape={SHAPE.pill}>
+            Get Result <
+            /Button></ButtonGroup > < /
             form > <
             NotificationContainer / > < /Block ></div > ): ( < ToasterContainer > <
             ContractLoader name = "Clinical Trial"
