@@ -11,8 +11,8 @@ import { atomWithStorage } from 'jotai/utils'
 import { focusAtom } from 'jotai/optics'
 import { useRef, VFC } from "react"
 import ArrowRight from 'baseui/icon/arrow-right';
-import useIsClient from '../hooks/useIsClient.ts'
-import { createApi } from '../lib/polkadotApi.ts'
+import useIsClient from '../hooks/useIsClient'
+import { createApi } from '../lib/polkadotApi'
 
 const endpointAtom = atomWithStorage<string>(
     'atom:endpoint',
@@ -36,7 +36,7 @@ const ContractLoader: VFC<{
     const [contractInfo, setContractInfo] = useAtom(contractInfoAtom.current)
     const [endpoint, setEndpoint] = useAtom(endpointAtom)
     const [pruntimeURL, setPruntimeURL] = useAtom(pruntimeURLAtom)
-    const metadata = require('../metadata.json')
+    const metadata = require('../metadata_clinical.json')
     const { contractId = ''} = contractInfo || {}
     const isClient = useIsClient()
     if (!isClient) return null

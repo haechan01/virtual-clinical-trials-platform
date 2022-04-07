@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { signCertificate } from '@phala/sdk';
 import { useAtom } from 'jotai';
 import { Button } from 'baseui/button';
@@ -21,6 +21,7 @@ import ContractLoader from './components/ContractLoader.tsx';
 import AccountSelect from './components/AccountSelect.tsx';
 
 export default function FormPage() {
+    const [certificateData, setCertificateData] = useState()
     const [api, setApi] = useState()
     const [contract, setContract] = useState()
     const [buttonTextRaw, setButtonTextRaw] = useState()
@@ -32,6 +33,10 @@ export default function FormPage() {
     const [fileRawState, setFileRaw] = useState("")
     const [filePreprocessedState, setFilePreprocessed] = useState("")
 
+
+    useEffect(() => {
+        setCertificateData(undefined)
+    }, [account])
 
     function handleCSV(file, fileType) {
         Papa.parse(file, {
@@ -58,6 +63,7 @@ export default function FormPage() {
 
     // what happens when user submits the form
     async function afterSubmit(values) {
+
         if (account && api) {
             try {
                 const signer = await getSigner(account)

@@ -34,3 +34,11 @@ std = [
     "scale-info/std",
 ]
 ink-as-dependency = []
+
+[profile.dev]
+opt-level = 1               # Use slightly better optimizations.
+overflow-checks = false     # Disable integer overflow checks.
+
+[profile.release]
+opt-level = 1               # Use slightly better optimizations.
+overflow-checks = false     # Disable integer overflow checks.
