@@ -50,13 +50,13 @@ mod clinical_trial_data {
         // sets the p-value of the ClinicalTrialData contract
         #[ink(message)]
         pub fn set_p_value(&mut self, p: u128) {
-            self.p_value = p
+            self.p_value = p;
         }
 
         // gets the p-value of the ClinicalTrialData contract
         #[ink(message)]
         pub fn set_stat_test(&mut self, stat_test: String) {
-            self.stat_test = stat_test
+            self.stat_test = stat_test;
         }
 
         // gets the p-value of the ClinicalTrialData contract
@@ -151,14 +151,17 @@ mod clinical_trial_data {
             self.data_summary.insert(String::from("Placebo Negative"), &placebo_neg);
         }
 
+        // calculates factorial iteratively
         pub fn factorial(&self, num: u128) -> u128 {
             (1..=num).fold(1, |acc, v| acc * v)
         }
         
+        // calculates fisher's exact test formulaically
         pub fn binomial(&self, val1: u128, val2: u128) -> u128{
-            self.factorial(val1)/(self.factorial(val2)*self.factorial(&val1-&val2))
+            self.factorial(val1) / (self.factorial(val2) * self.factorial(&val1 - &val2))
         }
 
+        // calculates p-value using hypergeometric distribution in fisher's exact test
         pub fn hypergeom_cdf(&self, population: u128, cured: u128, treatment: u128, mut observed: u128) -> u128 {
             let mut hypergeom_sum: u128 = 0;
             while observed <= treatment && observed <= cured{
@@ -187,12 +190,14 @@ mod clinical_trial_data {
             let scalar: u128 = 100; // significant figure multiplier
             let scaled_p: u128 = self.p_value*self.binomial(population, treatment); // since self.p_value = 5 is already scaled by 100 from 0.05
             let scaled_right_cdf: u128 = self.hypergeom_cdf(population, cured, treatment, observed)*scalar;
+
             // 4. compare p with p-value
             if scaled_right_cdf < scaled_p {
                 self.result = true;
             }
         }
 
+        // gets a boolean result, true = significant result, otherwise false
         #[ink(message)]
         pub fn get_result(&self) -> bool {
             self.result
