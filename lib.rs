@@ -214,7 +214,7 @@ mod clinical_trial_data {
             
             // 2. get hypergeomtric parameters
             let population  = treatment_pos + treatment_neg + placebo_pos + placebo_neg;
-            let cured = treatment_pos + placebo_neg;
+            let cured = treatment_neg + placebo_neg;
             let treatment = treatment_pos + treatment_neg;
             let observed = treatment_neg; // neg instead of pos because we consider the left tail in our sample
 
