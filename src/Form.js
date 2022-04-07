@@ -112,8 +112,8 @@ export default function FormPage() {
                     NotificationManager.error('Failed to obtain on-chain p-value', 'Failed p-value retrieval', 10000);
                 }
                 try {
-                    // upload preprocessed data
-                    const downloaded_raw = await contract.query.downloadRaw(certificate, {}) // injected signer object from polkadot extension??
+                    // download present raw data
+                    const downloaded_raw = await contract.query.downloadRaw(certificate, {})
                     console.log(downloaded_raw.output.toHuman())
                     NotificationManager.success('Raw Data downloaded successfully', 'Raw Data Download');
                 } catch (e) {
@@ -132,6 +132,7 @@ export default function FormPage() {
         try {
             // obtain stat_test results
             const { received_result } = await contract.query.getResult(certificateData, {});
+            console.log(received_result);
             if (received_result) {
                 alert("We have sufficient information to reject the null hypothesis");
             } else {
@@ -141,6 +142,7 @@ export default function FormPage() {
             console.log(e);
             NotificationManager.error('Failed to obtain Trial results', 'Failed result collection', 10000);
         }
+
     }
 
 
