@@ -53,6 +53,19 @@ mod clinical_trial_data {
             self.p_value
         }
 
+        // gets the p-value of the ClinicalTrialData contract
+        #[ink(message)]
+        pub fn get_p_value(&self) -> u128 {
+            self.p_value
+        }
+
+
+        // gets the p-value of the ClinicalTrialData contract
+        #[ink(message)]
+        pub fn get_p_value(&self) -> u128 {
+            self.p_value
+        }
+
         // gets the statistical test of the ClinicalTrialData contract
         #[ink(message)]
         pub fn get_stat_test(&self) -> String {

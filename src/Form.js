@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { signCertificate } from '@phala/sdk';
 import { useAtom } from 'jotai';
 import { Button } from 'baseui/button';
@@ -9,6 +9,7 @@ import { getSigner } from './lib/polkadotExtension.ts';
 import { FormControl } from 'baseui/form-control';
 import { Input } from 'baseui/input';
 import { Block } from 'baseui/block';
+import { ToasterContainer } from 'baseui/toast';
 import Upload from 'baseui/icon/upload';
 import './Form.css';
 import { FileUploader } from "baseui/file-uploader";
@@ -18,10 +19,8 @@ import { NotificationContainer, NotificationManager } from 'react-notifications'
 import Papa from 'papaparse';
 import ContractLoader from './components/ContractLoader.tsx';
 import AccountSelect from './components/AccountSelect.tsx';
-import { isInstanceOf } from '@polkadot/util';
 
 export default function FormPage() {
-    const [certificateData, setCertificateData] = useState()
     const [api, setApi] = useState()
     const [contract, setContract] = useState()
     const [buttonTextRaw, setButtonTextRaw] = useState()
@@ -30,9 +29,9 @@ export default function FormPage() {
     const [typeState, setType] = useState("fishers_exact_test")
     const [nameState, setName] = useState("")
     const [threshold, setThreshold] = useState(0.05)
+    const [fileRawState, setFileRaw] = useState("")
+    const [filePreprocessedState, setFilePreprocessed] = useState("")
 
-    const [fileRawState, setFileRaw] = useState()
-    const [filePreprocessedState, setFilePreprocessed] = useState()
 
     useEffect(() => {
         setCertificateData(undefined)
@@ -49,7 +48,7 @@ export default function FormPage() {
                     setFileRaw(data);
                 } else {
                     setFilePreprocessed(data);
-                };
+                }
             }
         });
     }
@@ -63,7 +62,6 @@ export default function FormPage() {
 
     // what happens when user submits the form
     async function afterSubmit(values) {
-
         if (account && api) {
             const signer = await getSigner(account)
 
@@ -149,7 +147,6 @@ export default function FormPage() {
 
 
 
-
     return contract ? ( <
         div className = "container" > <
         Block > <
@@ -191,8 +188,7 @@ export default function FormPage() {
         onDrop = {
             ([event]) => {
                 setButtonTextProcessed(event.name)
-                handleCSV(event, "processed")
-                console.log(initialValues);
+                handleCSV(event, "processed");
             }
         }
         overrides = {
@@ -261,7 +257,7 @@ export default function FormPage() {
             Submit <
             /Button>< /
             form > <
-            NotificationContainer / > < /Block ></div > ): ( <
+            NotificationContainer / > < /Block ></div > ): ( < ToasterContainer > <
             ContractLoader name = "Clinical Trial"
             onLoad = {
                 ({ api, contract }) => {
@@ -269,7 +265,7 @@ export default function FormPage() {
                     setContract(contract)
                 }
             }
-            /> 
+            />< /ToasterContainer >
         )
     }
     FormPage.title = 'Trial upload page';
