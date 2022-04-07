@@ -36,7 +36,11 @@ const ContractLoader: VFC<{
     const [contractInfo, setContractInfo] = useAtom(contractInfoAtom.current)
     const [endpoint, setEndpoint] = useAtom(endpointAtom)
     const [pruntimeURL, setPruntimeURL] = useAtom(pruntimeURLAtom)
+<<<<<<< HEAD
   const metadata = require('../metadata_clinical.json')
+=======
+    const metadata = require('../metadata_clinical.json')
+>>>>>>> 4ea71759c534ed6af5de112d080118c10947b6fb
     const { contractId = ''} = contractInfo || {}
     const isClient = useIsClient()
     if (!isClient) return null
