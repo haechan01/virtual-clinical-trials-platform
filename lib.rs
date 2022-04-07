@@ -15,24 +15,25 @@ mod clinical_trial_data {
     pub struct ClinicalTrialData {
 
         // data
-        raw_records: Vec<(u128, String, String)>, // Vec[(1, "Treatment", "Positive"), (2, "Placebo", "Negative"), ...]
-        preprocessed_records: Vec<(u128, String, String)>,
+        raw_records: Vec<(String, String, String)>, // Vec[("1", "Treatment", "Positive"), ("2", "Placebo", "Negative"), ...]
+        preprocessed_records: Vec<(String, String, String)>,
         data_summary: Mapping<String, u128>, // {'Treatment Positive': 3, 'Treatment Negative': 385, 'Placebo Positive': 28, 'Placebo Negative': 358}
 
         // study characteristics
-        p_value: u128, // i.e. ink doesn't allow for float, use significant figure multiplier method
+        p_thresh: u128, // i.e. ink doesn't allow for float, use significant figure multiplier method
         stat_test: String, // i.e. fishers_exact_test
-        result: bool // true for significant result, i.e. < p-value, false for insignificant, i.e. > p-value        
+        result: bool, // true for significant result, i.e. < p-value, false for insignificant, i.e. > p-value
+        p_value: u128 // resulting p   
     }
 
     impl ClinicalTrialData {
 
         // creates a new ClinicalTrialData contract initialized to the given values (done on polkadot/subtrate UI)
         #[ink(constructor)] 
-        pub fn new(custom_p_value: u128, custom_stat_test: String) -> Self {
+        pub fn new(custom_p_thresh: u128, custom_stat_test: String) -> Self {
 
             ink_lang::utils::initialize_contract(|contract: &mut Self| {
-                contract.p_value = custom_p_value;
+                contract.p_thresh = custom_p_thresh;
                 contract.stat_test = custom_stat_test;
             })
         }
@@ -42,15 +43,15 @@ mod clinical_trial_data {
         pub fn default() -> Self {
 
             ink_lang::utils::initialize_contract(|contract: &mut Self| {
-                contract.p_value = 5;
+                contract.p_thresh = 5;
                 contract.stat_test = String::from("fishers_exact_test");
             })
         }
 
         // sets the p-value of the ClinicalTrialData contract
         #[ink(message)]
-        pub fn set_p_value(&mut self, p: u128) {
-            self.p_value = p;
+        pub fn set_p_thresh(&mut self, p: u128) {
+            self.p_thresh = p;
         }
 
         // gets the p-value of the ClinicalTrialData contract
@@ -61,8 +62,8 @@ mod clinical_trial_data {
 
         // gets the p-value of the ClinicalTrialData contract
         #[ink(message)]
-        pub fn get_p_value(&self) -> u128 {
-            self.p_value
+        pub fn get_p_thresh(&self) -> u128 {
+            self.p_thresh
         }
 
         // gets the statistical test of the ClinicalTrialData contract
@@ -73,7 +74,7 @@ mod clinical_trial_data {
 
         // uploads records to contract storage from frontend with a whole array
         #[ink(message)]
-        pub fn upload_all_raw(&mut self, records: Vec<(u128, String, String)>) {
+        pub fn upload_all_raw(&mut self, records: Vec<(String, String, String)>) {
             for record in records {
                 self.raw_records.push(record);
             }
@@ -81,21 +82,21 @@ mod clinical_trial_data {
 
         // uploads records to contract storage from frontend one-by-one
         #[ink(message)]
-        pub fn upload_one_raw(&mut self, patient_id: u128, group: String, outcome: String) {
+        pub fn upload_one_raw(&mut self, patient_id: String, group: String, outcome: String) {
 
-            let record: (u128, String, String) = (patient_id, group, outcome);
+            let record: (String, String, String) = (patient_id, group, outcome);
             self.raw_records.push(record);
         }
 
         // returns records from contract storage to frontend (access: contract owner, i.e. researcher)
         #[ink(message)]
-        pub fn download_raw(&self) -> Vec<(u128, String, String)>{
+        pub fn download_raw(&self) -> Vec<(String, String, String)>{
             self.raw_records.clone()
         }
 
         // uploads preprocessed record to contract storage from frontend and returns stat test results 
         #[ink(message)]
-        pub fn upload_all_preprocessed(&mut self, records: Vec<(u128, String, String)>) {
+        pub fn upload_all_preprocessed(&mut self, records: Vec<(String, String, String)>) {
             for record in records {
                 self.preprocessed_records.push(record);
             }
@@ -105,8 +106,8 @@ mod clinical_trial_data {
 
         // uploads preprocessed record to contract storage from frontend and returns stat test results 
         #[ink(message)]
-        pub fn upload_one_preprocessed(&mut self, patient_id: u128, group: String, outcome: String) {
-            let record: (u128, String, String) = (patient_id, group, outcome);
+        pub fn upload_one_preprocessed(&mut self, patient_id: String, group: String, outcome: String) {
+            let record: (String, String, String) = (patient_id, group, outcome);
             self.preprocessed_records.push(record);
         }
 
@@ -165,7 +166,7 @@ mod clinical_trial_data {
         pub fn hypergeom_cdf(&self, population: u128, cured: u128, treatment: u128, mut observed: u128) -> u128 {
             let mut hypergeom_sum: u128 = 0;
             while observed <= treatment && observed <= cured{
-                hypergeom_sum += self.binomial(cured, observed) * self.binomial(population-cured, treatment-&observed);
+                hypergeom_sum += self.binomial(cured, observed) * self.binomial(population-cured, treatment - &observed);
                 observed += 1;
             }
             hypergeom_sum
@@ -187,20 +188,27 @@ mod clinical_trial_data {
             let observed = treatment_neg; // neg instead of pos because we consider the left tail in our sample
 
             // significant figure multiplier
-            let scalar: u128 = 100; // significant figure multiplier
-            let scaled_p: u128 = self.p_value*self.binomial(population, treatment); // since self.p_value = 5 is already scaled by 100 from 0.05
+            let scalar: u128 = 1000; // significant figure multiplier
+            let scaled_p: u128 = self.p_thresh * self.binomial(population, treatment); // since self.p_thresh = 5 is already scaled by 100 from 0.05
             let scaled_right_cdf: u128 = self.hypergeom_cdf(population, cured, treatment, observed)*scalar;
 
-            // 4. compare p with p-value
+            // 4. compare p-value with p-thresh
+            self.p_value = scaled_right_cdf;
             if scaled_right_cdf < scaled_p {
                 self.result = true;
             }
         }
 
-        // gets a boolean result, true = significant result, otherwise false
+        // gets result; true = significant, otherwise false
         #[ink(message)]
         pub fn get_result(&self) -> bool {
             self.result
+        }
+
+        // gets p-value result
+        #[ink(message)]
+        pub fn get_p_value(&self) -> u128 {
+            self.p_value
         }
     }
 
@@ -214,28 +222,28 @@ mod clinical_trial_data {
         #[ink::test]
         fn init_works() {
             let research = ClinicalTrialData::default();
-            assert!(research.get_p_value() == 5 && research.get_stat_test() == String::from("fishers_exact_test"));
+            assert!(research.get_p_thresh() == 5 && research.get_stat_test() == String::from("fishers_exact_test"));
 
             let research = ClinicalTrialData::new(2, String::from("t_test"));
-            assert!(research.get_p_value() == 2 && research.get_stat_test() == String::from("t_test"));
+            assert!(research.get_p_thresh() == 2 && research.get_stat_test() == String::from("t_test"));
         }
 
         #[ink::test]
         fn upload_all_works() {
             
-            let sample: Vec<(u128, String, String )> = vec![
-                (1, "Treatment", "Yes"), (2, "Treatment", "Yes"), (3, "Treatment", "Yes"), 
-                (4, "Treatment", "No"), (5, "Treatment", "No"), (6, "Treatment", "No"), 
-                (7, "Treatment", "No"), (8, "Treatment", "No"), (9, "Treatment", "No"), 
-                (10, "Treatment", "No"),(111, "Treatment", "No"), (112, "Treatment", "No"), 
-                (113, "Treatment", "No"), (114, "Treatment", "No"), (115, "Treatment", "No"),
-                (431, "Placebo", "No"), (432, "Placebo", "No"), (433, "Placebo", "No"), 
-                (434, "Placebo", "No"), (435, "Placebo", "No"), (436, "Placebo", "No"), 
-                (437, "Placebo", "No"), (438, "Placebo", "No"), (439, "Placebo", "No"), 
-                (440, "Placebo", "No")]
+            let sample: Vec<(String, String, String)> = vec![
+                ("1", "Treatment", "Yes"), ("2", "Treatment", "Yes"), ("3", "Treatment", "Yes"), 
+                ("4", "Treatment", "No"), ("5", "Treatment", "No"), ("6", "Treatment", "No"), 
+                ("7", "Treatment", "No"), ("8", "Treatment", "No"), ("9", "Treatment", "No"), 
+                ("10", "Treatment", "No"),("111", "Treatment", "No"), ("112", "Treatment", "No"), 
+                ("113", "Treatment", "No"), ("114", "Treatment", "No"), ("115", "Treatment", "No"),
+                ("431", "Placebo", "No"), ("432", "Placebo", "No"), ("433", "Placebo", "No"), 
+                ("434", "Placebo", "No"), ("435", "Placebo", "No"), ("436", "Placebo", "No"), 
+                ("437", "Placebo", "No"), ("438", "Placebo", "No"), ("439", "Placebo", "No"), 
+                ("440", "Placebo", "No")]
                     .iter()
-                    .map(|x| (x.0, x.1.to_string(), x.2.to_string()))
-                    .collect::<Vec<(u128, String, String)>>();
+                    .map(|x| (x.0.to_string(), x.1.to_string(), x.2.to_string()))
+                    .collect::<Vec<(String, String, String)>>();
             
             // initialize default contract with p = 0.05 and fisher's exact test
             let mut research = ClinicalTrialData::default();
@@ -266,36 +274,36 @@ mod clinical_trial_data {
         #[ink::test]
         fn upload_one_by_one_works() {
             
-            let sample: Vec<(u128, String, String )> = vec![
-                (1, "Treatment", "Yes"), (2, "Treatment", "Yes"), (3, "Treatment", "Yes"), 
-                (4, "Treatment", "No"), (5, "Treatment", "No"), (6, "Treatment", "No"), 
-                (7, "Treatment", "No"), (8, "Treatment", "No"), (9, "Treatment", "No"), 
-                (10, "Treatment", "No"),(111, "Treatment", "No"), (112, "Treatment", "No"), 
-                (113, "Treatment", "No"), (114, "Treatment", "No"), (115, "Treatment", "No"),
-                (431, "Placebo", "No"), (432, "Placebo", "No"), (433, "Placebo", "No"), 
-                (434, "Placebo", "No"), (435, "Placebo", "No"), (436, "Placebo", "No"), 
-                (437, "Placebo", "No"), (438, "Placebo", "No"), (439, "Placebo", "No"), 
-                (440, "Placebo", "No")]
+            let sample: Vec<(String, String, String)> = vec![
+                ("1", "Treatment", "Yes"), ("2", "Treatment", "Yes"), ("3", "Treatment", "Yes"), 
+                ("4", "Treatment", "No"), ("5", "Treatment", "No"), ("6", "Treatment", "No"), 
+                ("7", "Treatment", "No"), ("8", "Treatment", "No"), ("9", "Treatment", "No"), 
+                ("10", "Treatment", "No"),("111", "Treatment", "No"), ("112", "Treatment", "No"), 
+                ("113", "Treatment", "No"), ("114", "Treatment", "No"), ("115", "Treatment", "No"),
+                ("431", "Placebo", "No"), ("432", "Placebo", "No"), ("433", "Placebo", "No"), 
+                ("434", "Placebo", "No"), ("435", "Placebo", "No"), ("436", "Placebo", "No"), 
+                ("437", "Placebo", "No"), ("438", "Placebo", "No"), ("439", "Placebo", "No"), 
+                ("440", "Placebo", "No")]
                     .iter()
-                    .map(|x| (x.0, x.1.to_string(), x.2.to_string()))
-                    .collect::<Vec<(u128, String, String)>>();
+                    .map(|x| (x.0.to_string(), x.1.to_string(), x.2.to_string()))
+                    .collect::<Vec<(String, String, String)>>();
             
             // initialize default contract with p = 0.05 and fisher's exact test
             let mut research = ClinicalTrialData::default();
 
             // set p-value and stat test
-            research.set_p_value(6);
+            research.set_p_thresh(6);
             research.set_stat_test(String::from("difference_of_means_test"));
-            assert!(research.p_value == 6);
+            assert!(research.p_thresh == 6);
             assert!(research.stat_test == "difference_of_means_test");
             
             // revert back to default since contract doesn't have difference of means yet
-            research.set_p_value(5);
+            research.set_p_thresh(5);
             research.set_stat_test(String::from("fishers_exact_test"));
 
             // test raw records upload one by one
             for patient in sample.clone().iter() {
-                research.upload_one_raw(patient.0, patient.1.clone(), patient.2.clone())
+                research.upload_one_raw(patient.0.clone(), patient.1.clone(), patient.2.clone())
             }
             assert!(research.raw_records == sample);
 
@@ -305,7 +313,7 @@ mod clinical_trial_data {
 
             // test preprocessed records upload 
             for patient in sample.clone().iter() {
-                research.upload_one_preprocessed(patient.0, patient.1.clone(), patient.2.clone())
+                research.upload_one_preprocessed(patient.0.clone(), patient.1.clone(), patient.2.clone())
             };
             research.run_on_preprocessed();
             assert!(research.preprocessed_records == sample);
