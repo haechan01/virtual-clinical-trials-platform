@@ -20,7 +20,7 @@ const endpointAtom = atomWithStorage<string>(
 )
 const pruntimeURLAtom = atomWithStorage<string>(
     'atom:pruntime_url',
-    'https://poc5.phala.network/tee-api-1'
+    'https://poc5.phala.network/tee-api-3'
 )
 const contractsAtom = atomWithStorage<
     Record<string, { contractId: string}>
@@ -36,11 +36,7 @@ const ContractLoader: VFC<{
     const [contractInfo, setContractInfo] = useAtom(contractInfoAtom.current)
     const [endpoint, setEndpoint] = useAtom(endpointAtom)
     const [pruntimeURL, setPruntimeURL] = useAtom(pruntimeURLAtom)
-<<<<<<< HEAD
-  const metadata = require('../metadata_clinical.json')
-=======
     const metadata = require('../metadata_clinical.json')
->>>>>>> 4ea71759c534ed6af5de112d080118c10947b6fb
     const { contractId = ''} = contractInfo || {}
     const isClient = useIsClient()
     if (!isClient) return null
@@ -78,7 +74,7 @@ const ContractLoader: VFC<{
       </FormControl>
       <FormControl label="Pruntime URL">
         <Input
-          placeholder="https://poc5.phala.network/tee-api-1"
+          placeholder="https://poc5.phala.network/tee-api-3"
           overrides={{
             Input: {
               style: {
