@@ -24,7 +24,7 @@ mod clinical_trial_data {
         p_thresh: u128, // i.e. ink doesn't allow for float, use significant figure multiplier method
         stat_test: String, // i.e. fishers_exact_test
         result: bool, // true for significant result, i.e. < p-value, false for insignificant, i.e. > p-value
-        p_value: Vec<u128> // resulting p   
+        p_value: Vec<u128, u128> // resulting p   
     }
 
     impl ClinicalTrialData {
@@ -119,6 +119,18 @@ mod clinical_trial_data {
             self.run_stat_test();
         }
 
+        // gets result; true = significant, otherwise false
+        #[ink(message)]
+        pub fn get_result(&self) -> bool {
+            self.result
+        }
+
+        // gets p-value result
+        #[ink(message)]
+        pub fn get_p_value(&self) -> Vec<u128> {
+            self.p_value.clone()
+        }
+
         // aggregates preprocessed records to data summary (access: owner)
         pub fn aggregate_data(&mut self) {
 
@@ -198,18 +210,6 @@ mod clinical_trial_data {
             if scaled_right_cdf < scaled_p {
                 self.result = true;
             }
-        }
-
-        // gets result; true = significant, otherwise false
-        #[ink(message)]
-        pub fn get_result(&self) -> bool {
-            self.result
-        }
-
-        // gets p-value result
-        #[ink(message)]
-        pub fn get_p_value(&self) -> Vec<u128> {
-            self.p_value.clone()
         }
     }
 

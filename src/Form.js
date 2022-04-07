@@ -97,7 +97,7 @@ export default function FormPage() {
                 try {
                     // obtain stat_test results
                     const { received_result } = await contract.query.getResult(certificate, {});
-                    if (received_result.toHuman()) {
+                    if (received_result) {
                         alert("We have sufficient information to reject the null hypothesis");
                     } else {
                         alert("We do not have sufficient information to reject the null hypothesis");
