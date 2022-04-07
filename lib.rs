@@ -23,7 +23,7 @@ mod clinical_trial_data {
         p_thresh: u128, // i.e. ink doesn't allow for float, use significant figure multiplier method
         stat_test: String, // i.e. fishers_exact_test
         result: bool, // true for significant result, i.e. < p-value, false for insignificant, i.e. > p-value
-        p_value: u128 // resulting p   
+        p_value: Vec<u128, u128> // resulting p   
     }
 
     impl ClinicalTrialData {
@@ -188,12 +188,12 @@ mod clinical_trial_data {
             let observed = treatment_neg; // neg instead of pos because we consider the left tail in our sample
 
             // significant figure multiplier
-            let scalar: u128 = 1000; // significant figure multiplier
+            let scalar: u128 = 100; // significant figure multiplier
             let scaled_p: u128 = self.p_thresh * self.binomial(population, treatment); // since self.p_thresh = 5 is already scaled by 100 from 0.05
             let scaled_right_cdf: u128 = self.hypergeom_cdf(population, cured, treatment, observed)*scalar;
 
             // 4. compare p-value with p-thresh
-            self.p_value = scaled_right_cdf;
+            self.p_value = vec![self.hypergeom_cdf(population, cured, treatment, observed), self.binomial(population, treatment)];
             if scaled_right_cdf < scaled_p {
                 self.result = true;
             }
