@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0x26ab2248330e5f6fb08555af34e878c5ba0d4f08b4524c9c86530d7a50b88ea9",
+    "hash": "0x921f953e3c4756de68c4c770ff99dd6ceb41d66dcf668c3d21e0be373eff54f7",
     "language": "ink! 3.0.0",
     "compiler": "rustc 1.61.0-nightly"
   },
@@ -17,12 +17,12 @@
         {
           "args": [
             {
-              "label": "custom_p_value",
+              "label": "custom_p_thresh",
               "type": {
                 "displayName": [
                   "u128"
                 ],
-                "type": 2
+                "type": 4
               }
             },
             {
@@ -31,7 +31,7 @@
                 "displayName": [
                   "String"
                 ],
-                "type": 3
+                "type": 2
               }
             }
           ],
@@ -59,16 +59,16 @@
                 "displayName": [
                   "u128"
                 ],
-                "type": 2
+                "type": 4
               }
             }
           ],
           "docs": [],
-          "label": "set_p_value",
+          "label": "set_p_thresh",
           "mutates": true,
           "payable": false,
           "returnType": null,
-          "selector": "0xbdfe1ba5"
+          "selector": "0x31b55e8a"
         },
         {
           "args": [
@@ -78,7 +78,7 @@
                 "displayName": [
                   "String"
                 ],
-                "type": 3
+                "type": 2
               }
             }
           ],
@@ -92,16 +92,16 @@
         {
           "args": [],
           "docs": [],
-          "label": "get_p_value",
+          "label": "get_p_thresh",
           "mutates": false,
           "payable": false,
           "returnType": {
             "displayName": [
               "u128"
             ],
-            "type": 2
+            "type": 4
           },
-          "selector": "0x91eb9e9f"
+          "selector": "0xf7a31b15"
         },
         {
           "args": [],
@@ -113,7 +113,7 @@
             "displayName": [
               "String"
             ],
-            "type": 3
+            "type": 2
           },
           "selector": "0xc9cd37f8"
         },
@@ -142,7 +142,7 @@
               "label": "patient_id",
               "type": {
                 "displayName": [
-                  "u128"
+                  "String"
                 ],
                 "type": 2
               }
@@ -153,7 +153,7 @@
                 "displayName": [
                   "String"
                 ],
-                "type": 3
+                "type": 2
               }
             },
             {
@@ -162,7 +162,7 @@
                 "displayName": [
                   "String"
                 ],
-                "type": 3
+                "type": 2
               }
             }
           ],
@@ -212,7 +212,7 @@
               "label": "patient_id",
               "type": {
                 "displayName": [
-                  "u128"
+                  "String"
                 ],
                 "type": 2
               }
@@ -223,7 +223,7 @@
                 "displayName": [
                   "String"
                 ],
-                "type": 3
+                "type": 2
               }
             },
             {
@@ -232,7 +232,7 @@
                 "displayName": [
                   "String"
                 ],
-                "type": 3
+                "type": 2
               }
             }
           ],
@@ -265,6 +265,20 @@
             "type": 8
           },
           "selector": "0x0f5724c5"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_p_value",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 9
+          },
+          "selector": "0x91eb9e9f"
         }
       ]
     },
@@ -293,7 +307,7 @@
             "layout": {
               "cell": {
                 "key": "0x0200000000000000000000000000000000000000000000000000000000000000",
-                "ty": 4
+                "ty": 3
               }
             },
             "name": "data_summary"
@@ -302,16 +316,16 @@
             "layout": {
               "cell": {
                 "key": "0x0300000000000000000000000000000000000000000000000000000000000000",
-                "ty": 2
+                "ty": 4
               }
             },
-            "name": "p_value"
+            "name": "p_thresh"
           },
           {
             "layout": {
               "cell": {
                 "key": "0x0400000000000000000000000000000000000000000000000000000000000000",
-                "ty": 3
+                "ty": 2
               }
             },
             "name": "stat_test"
@@ -324,6 +338,15 @@
               }
             },
             "name": "result"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0600000000000000000000000000000000000000000000000000000000000000",
+                "ty": 9
+              }
+            },
+            "name": "p_value"
           }
         ]
       }
@@ -345,8 +368,8 @@
           "def": {
             "tuple": [
               2,
-              3,
-              3
+              2,
+              2
             ]
           }
         }
@@ -355,20 +378,12 @@
         "id": 2,
         "type": {
           "def": {
-            "primitive": "u128"
-          }
-        }
-      },
-      {
-        "id": 3,
-        "type": {
-          "def": {
             "primitive": "str"
           }
         }
       },
       {
-        "id": 4,
+        "id": 3,
         "type": {
           "def": {
             "composite": {
@@ -384,11 +399,11 @@
           "params": [
             {
               "name": "K",
-              "type": 3
+              "type": 2
             },
             {
               "name": "V",
-              "type": 2
+              "type": 4
             }
           ],
           "path": [
@@ -397,6 +412,14 @@
             "mapping",
             "Mapping"
           ]
+        }
+      },
+      {
+        "id": 4,
+        "type": {
+          "def": {
+            "primitive": "u128"
+          }
         }
       },
       {
@@ -442,6 +465,16 @@
         "type": {
           "def": {
             "primitive": "bool"
+          }
+        }
+      },
+      {
+        "id": 9,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 4
+            }
           }
         }
       }
