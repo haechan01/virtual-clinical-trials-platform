@@ -38,7 +38,7 @@ export default function FormPage() {
         setCertificateData(undefined)
     }, [account])
 
-    function handleCSV(file, fileType, initialValues) {
+    function handleCSV(file, fileType) {
         Papa.parse(file, {
             header: false,
             dynamicTyping: true,
@@ -65,78 +65,85 @@ export default function FormPage() {
     async function afterSubmit(values) {
 
         if (account && api) {
+            const signer = await getSigner(account)
 
-            try {
-
-                const signer = await getSigner(account)
-
-                // Save certificate data to state, or anywhere else you want like local storage
-                setCertificateData(
-                    await signCertificate({
-                        api,
-                        account,
-                        signer,
-                    })
-                )
-                NotificationManager.success('Certificate successfully signed', 'Certificate signage', 5000);
+            // Save certificate data to state, or anywhere else you want like local storage
+            const certificate = await signCertificate({
+                api,
+                account,
+                signer,
+            });
+            console.log(account.address, { signer })
+            NotificationManager.success('Certificate successfully signed', 'Certificate signage', 5000);
+            if (contract && certificate) {
+                console.log("GETTING P-VALUE")
                 try {
-                    setCertificateData(
-                        await signCertificate({
-                            api,
-                            account,
-                            signer,
-                        })
-                    )
-                    NotificationManager.success('Certificate successfully signed', 'Certificate signage');
-                } catch (e) {
-                    NotificationManager.error('Failed to sign', 'Failed sign', 5000);
-                }
-
-
-
-                // HERE
-                if (contract && certificateData) {
-                    const p = await contract.query.getPValue(certificateData, {})
+                    const { p } = await contract.query.getStatTest(certificate, {})
+                    console.log(p.toHuman())
+                    console.log("P-VALUE SUCCESS")
                     NotificationManager.success(`P obtained successfully ${p.toHuman()}`, 'p value obtained');
-                } else {
-                    console.log("either contract or certificate data no present") // THIS PRINTS
-                }
-
-
-                try {
-                    // upload preprocessed data
-                    await contract.tx.upload_raw({}, values.file) 
-                        .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
-                    NotificationManager.success('Raw Data uploaded uccessfully', 'Preprocessed Data Upload');
                 } catch (e) {
-                    NotificationManager.error('Raw Data failed to upload', 'Failed Data Upload', 5000);
+                    console.log(e)
                 }
-
-                try {
-                    // obtain p_value
-                    const received_p = await contract.query.get_p_value(certificateData, {});
-                    NotificationManager.info(`user p: ${values.pValueThresh}`, "Obtained p-value from form", 5000);
-                    NotificationManager.info(`received from blockchain: ${received_p}`, "P-value on-chain", 5000);
-                } catch (e) {
-                    NotificationManager.error('Failed to obtain on-chain p-value', 'Failed p-value retrieval', 10000);
-                }
-                try {
-                    // obtain stat_test results
-                    const received_result = await contract.query.get_result(certificateData, {});
-                    if (received_result) {
-                        alert("We have sufficient information to reject the null hypothesis");
-                    } else {
-                        alert("We do not have sufficient information to reject the null hypothesis");
-                    }
-                } catch (e) {
-                    NotificationManager.error('Failed to obtain Trial results', 'Failed result collection', 10000);
-                }
-            } catch (err) {
-                NotificationManager.error(`${err}`, 'Failed to sign certificate', 10000);
+            } else {
+                console.log("PVALUE FAILURE")
+                NotificationManager.error("either contract or certificate data no present", 'FAILED') // THIS PRINTS
             }
         } else {
             alert("No defined account for use")
         }
+
+
+
+            // try {
+
+            //     const signer = await getSigner(account)
+
+            //     // Save certificate data to state, or anywhere else you want like local storage
+            //     setCertificateData(
+            //         await signCertificate({
+            //             api,
+            //             account,
+            //             signer,
+            //         })
+            //     )
+            //     NotificationManager.success('Certificate successfully signed', 'Certificate signage', 5000);
+
+
+                
+
+
+                // try {
+                //     // upload preprocessed data
+                //     await contract.tx.upload_raw({}, values.file)
+                //         .signAndSend(account.address, { signer }); // injected signer object from polkadot extension??
+                //     NotificationManager.success('Raw Data uploaded uccessfully', 'Preprocessed Data Upload');
+                // } catch (e) {
+                //     NotificationManager.error('Raw Data failed to upload', 'Failed Data Upload', 5000);
+                // }
+
+                // try {
+                //     // obtain p_value
+                //     const received_p = await contract.query.get_p_value(certificateData, {});
+                //     NotificationManager.info(`user p: ${values.pValueThresh}`, "Obtained p-value from form", 5000);
+                //     NotificationManager.info(`received from blockchain: ${received_p}`, "P-value on-chain", 5000);
+                // } catch (e) {
+                //     NotificationManager.error('Failed to obtain on-chain p-value', 'Failed p-value retrieval', 10000);
+                // }
+                // try {
+                //     // obtain stat_test results
+                //     const received_result = await contract.query.get_result(certificateData, {});
+                //     if (received_result) {
+                //         alert("We have sufficient information to reject the null hypothesis");
+                //     } else {
+                //         alert("We do not have sufficient information to reject the null hypothesis");
+                //     }
+                // } catch (e) {
+            //     //     NotificationManager.error('Failed to obtain Trial results', 'Failed result collection', 10000);
+            //     // }
+            // } catch (err) {
+            //     NotificationManager.error(`${err}`, 'Failed to sign certificate', 10000);
+            // }
     }
 
 
