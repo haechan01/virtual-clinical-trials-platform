@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { signCertificate } from '@phala/sdk';
 import { useAtom } from 'jotai';
 import { Button } from 'baseui/button';
@@ -21,6 +21,7 @@ import ContractLoader from './components/ContractLoader.tsx';
 import AccountSelect from './components/AccountSelect.tsx';
 
 export default function FormPage() {
+    const [certificateData, setCertificateData] = useState()
     const [api, setApi] = useState()
     const [contract, setContract] = useState()
     const [buttonTextRaw, setButtonTextRaw] = useState()
@@ -62,6 +63,7 @@ export default function FormPage() {
 
     // what happens when user submits the form
     async function afterSubmit(values) {
+
         if (account && api) {
             const signer = await getSigner(account)
 
@@ -71,12 +73,15 @@ export default function FormPage() {
                 account,
                 signer,
             });
-            console.log(account.address, { signer })
             NotificationManager.success('Certificate successfully signed', 'Certificate signage', 5000);
+
+            console.log(contract)
+            console.log(certificate)
+
             if (contract && certificate) {
                 console.log("GETTING P-VALUE")
                 try {
-                    const { p } = await contract.query.getStatTest(certificate, {})
+                    const { p } = await contract.query.get(certificate, {})
                     console.log(p.toHuman())
                     console.log("P-VALUE SUCCESS")
                     NotificationManager.success(`P obtained successfully ${p.toHuman()}`, 'p value obtained');
