@@ -66,6 +66,9 @@ export default function FormPage() {
     // what happens when user submits the form
     async function afterSubmit(values) {
 
+        // add some delay
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+
         if (account && api) {
             try {
                 const signer = await getSigner(account)
@@ -79,6 +82,9 @@ export default function FormPage() {
                 setCertificateData(certificate);
                 console.log(contract)
                 NotificationManager.success('Certificate successfully signed', 'Certificate signage', 5000);
+
+                await delay(1500);
+
                 if (values.file_preprocessed) {
                     try {
                         // upload preprocessed data
@@ -101,25 +107,30 @@ export default function FormPage() {
                         NotificationManager.error('Raw Data failed to upload', 'Failed Data Upload', 10000);
                     }
                 }
+
+                await delay(1500);
+
                 try {
                     // obtain p_value
-                    const received_p = await contract.query.getPValue(certificate, {});
-                    NotificationManager.info(`user p: ${values.pValueThresh}`, "Submitted p-Threshold", 5000);
-                    console.log(received_p.output.toHuman());
-                    NotificationManager.info(`received from blockchain: ${parseInt(received_p[0])/parseInt(received_p[1])}`, "P-value on-chain", 5000);
+                    const result = await contract.query.getPValue(certificate, {});
+                    NotificationManager.info(`user-defined p-threshold: ${values.pValueThresh}`, "Submitted p-threshold", 5000);
+                    const p_array = result.output.toHuman();
+                    const p = parseInt(p_array[0].replace(/,/g, '')) / parseInt(p_array[1].replace(/,/g, ''))
+                    NotificationManager.info(`received from blockchain: ${p}`, "P-value on-chain", 5000);
                 } catch (e) {
                     console.log(e);
                     NotificationManager.error('Failed to obtain on-chain p-value', 'Failed p-value retrieval', 10000);
                 }
                 try {
                     // download present raw data
-                    const downloaded_raw = await contract.query.downloadRaw(certificate, {})
-                    console.log(downloaded_raw.output.toHuman())
-                    NotificationManager.success('Raw Data downloaded successfully', 'Raw Data Download');
+                    const downloaded_preprocessed = await contract.query.downloadPreprocessed(certificate, {})
+                    console.log(downloaded_preprocessed.output.toHuman())
+                    // NotificationManager.success('Preprocessed Data downloaded successfully', 'Preprocessed Data Download');
                 } catch (e) {
                     console.log(e);
-                    NotificationManager.error('Raw Data failed to download', 'Failed Data Download', 10000);
+                    // NotificationManager.error('Preprocessed Data failed to download', 'Failed Data Download', 10000);
                 }
+
             } catch (err) {
                 console.log(err);
                 NotificationManager.error(`${err}`, 'Failed to sign certificate', 10000);
