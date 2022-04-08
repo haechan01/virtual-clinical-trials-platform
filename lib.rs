@@ -200,7 +200,7 @@ mod clinical_trial_data {
         }
 
         // calculates p-value using hypergeometric distribution in fisher's exact test
-        pub fn hypergeom_cdf(&self, population: u128, cured: u128, treatment: u128, mut observed: u128) -> u128 {
+        pub fn hypergeom_cdf(&self, population: u128, cured: u128, treatment: u128, observed: u128) -> u128 {
             let mut hypergeom_sum: u128 = 0;
             while observed <= cured && observed <= treatment{
                 hypergeom_sum += self.binomial(cured, observed)*self.binomial(population-cured, treatment-observed);
@@ -222,7 +222,7 @@ mod clinical_trial_data {
             let population  = treatment_pos + treatment_neg + placebo_pos + placebo_neg;
             let cured = treatment_pos + placebo_pos;
             let treatment = treatment_pos + treatment_neg;
-            let observed = treatment_pos; // neg instead of pos because we consider the left tail in our sample
+            let observed = treatment_pos; 
 
             // significant figure multiplier
             let scalar: u128 = 100; // significant figure multiplier
@@ -266,11 +266,10 @@ mod clinical_trial_data {
                 ("113", "Placebo", "Yes"), ("114", "Placebo", "Yes"), ("115", "Placebo", "Yes"),
                 ("431", "Placebo", "Yes"), ("432", "Placebo", "Yes"), ("433", "Placebo", "No"), 
                 ("434", "Placebo", "No"), ("435", "Placebo", "No"), ("436", "Placebo", "No"), 
-                ("437", "Placebo", "No"), ("438", "Placebo", "No"), ("439", "Placebo", "No"), 
                 ("440", "Placebo", "No"), ("23", "Treatment", "Yes"), ("24", "Treatment", "Yes"), 
                 ("25", "Treatment", "Yes"), ("26", "Treatment", "Yes"), ("27", "Treatment", "Yes"), 
                 ("28", "Treatment", "Yes"), ("29", "Treatment", "Yes"), ("30", "Treatment", "Yes"), 
-                ("31", "Treatment", "Yes"), ("10", "Treatment", "Yes"),("111", "Treatment", "Yes")]
+                ("31", "Treatment", "Yes"), ("45", "Treatment", "Yes"),("85", "Treatment", "Yes")]
                     .iter()
                     .map(|x| (x.0.to_string(), x.1.to_string(), x.2.to_string()))
                     .collect::<Vec<(String, String, String)>>();
@@ -298,7 +297,7 @@ mod clinical_trial_data {
             assert!(research.data_summary.get(&String::from("Treatment Positive")).unwrap() == 15);
             assert!(research.data_summary.get(&String::from("Treatment Negative")).unwrap() == 3);
             assert!(research.data_summary.get(&String::from("Placebo Positive")).unwrap() == 10);
-            assert!(research.data_summary.get(&String::from("Placebo Negative")).unwrap() == 8);
+            assert!(research.data_summary.get(&String::from("Placebo Negative")).unwrap() == 5);
             
             // test statistical test
             ink_env::debug_println!("p-value: {:?}", research.p_value);
@@ -316,11 +315,10 @@ mod clinical_trial_data {
                 ("113", "Placebo", "Yes"), ("114", "Placebo", "Yes"), ("115", "Placebo", "Yes"),
                 ("431", "Placebo", "Yes"), ("432", "Placebo", "Yes"), ("433", "Placebo", "No"), 
                 ("434", "Placebo", "No"), ("435", "Placebo", "No"), ("436", "Placebo", "No"), 
-                ("437", "Placebo", "No"), ("438", "Placebo", "No"), ("439", "Placebo", "No"), 
                 ("440", "Placebo", "No"), ("23", "Treatment", "Yes"), ("24", "Treatment", "Yes"), 
                 ("25", "Treatment", "Yes"), ("26", "Treatment", "Yes"), ("27", "Treatment", "Yes"), 
                 ("28", "Treatment", "Yes"), ("29", "Treatment", "Yes"), ("30", "Treatment", "Yes"), 
-                ("31", "Treatment", "Yes"), ("10", "Treatment", "Yes"),("111", "Treatment", "Yes")]
+                ("31", "Treatment", "Yes"), ("45", "Treatment", "Yes"),("85", "Treatment", "Yes")]
                     .iter()
                     .map(|x| (x.0.to_string(), x.1.to_string(), x.2.to_string()))
                     .collect::<Vec<(String, String, String)>>();
@@ -359,7 +357,7 @@ mod clinical_trial_data {
             assert!(research.data_summary.get(&String::from("Treatment Positive")).unwrap() == 15);
             assert!(research.data_summary.get(&String::from("Treatment Negative")).unwrap() == 3);
             assert!(research.data_summary.get(&String::from("Placebo Positive")).unwrap() == 10);
-            assert!(research.data_summary.get(&String::from("Placebo Negative")).unwrap() == 8);
+            assert!(research.data_summary.get(&String::from("Placebo Negative")).unwrap() == 5);
             
             // test statistical test
             ink_env::debug_println!("p-value: {:?}", research.p_value);
