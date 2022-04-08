@@ -13,6 +13,7 @@ import { Block } from 'baseui/block';
 import { ToasterContainer } from 'baseui/toast';
 import Upload from 'baseui/icon/upload';
 import './Form.css';
+import { Modal, ModalHeader, ModalBody, ModalFooter, ModalButton } from 'baseui/modal';
 import { FileUploader } from "baseui/file-uploader";
 import { RadioGroup, Radio, ALIGN } from 'baseui/radio';
 import 'react-notifications/lib/notifications.css';
@@ -34,6 +35,18 @@ export default function FormPage() {
     const [threshold, setThreshold] = useState(0.05)
     const [fileRawState, setFileRaw] = useState()
     const [filePreprocessedState, setFilePreprocessed] = useState()
+    const [gottenResult, setGottenResult] = useState(false)
+    const [isOpen, setIsOpen] = React.useState(false);
+
+    const buttonText = {
+        true: "We have sufficient information to reject the null hypothesis",
+        false: "We do not have sufficient information to reject the null hypothesis and assume extremism"
+    }
+
+    function close() {
+        setIsOpen(false);
+    }
+
 
 
     useEffect(() => {
@@ -144,16 +157,16 @@ export default function FormPage() {
             // obtain stat_test results
             const { received_result } = await contract.query.getResult(certificateData, {});
             console.log(received_result);
-            if (received_result) {
-                alert("We have sufficient information to reject the null hypothesis");
-            } else {
-                alert("We do not have sufficient information to reject the null hypothesis");
-            }
+            setGottenResult(received_result)
+                // if (received_result) {
+                //     alert("We have sufficient information to reject the null hypothesis");
+                // } else {
+                //     alert("We do not have sufficient information to reject the null hypothesis and assume extremism");
+                // }
         } catch (e) {
             console.log(e);
             NotificationManager.error('Failed to obtain Trial results', 'Failed result collection', 10000);
         }
-
     }
 
 
@@ -264,31 +277,39 @@ export default function FormPage() {
             (e) => {
                 e.preventDefault()
                 afterSubmit(initialValues)
+                obtainResults()
             }
         } >
         Submit <
-        /Button><
-        Button onClick = {
-            (e) => {
-                e.preventDefault()
-                obtainResults()
-            }
+        /Button><Button endEnhancer = {
+        () => < Check size = { 24 }
+        />} onClick={
+        (e) => {
+            e.preventDefault()
+            setIsOpen(true)
         }
-        endEnhancer = {
-            () => < Check size = { 24 }
-            />} shape={SHAPE.pill}>
-            Get Result <
-            /Button></ButtonGroup > < /
-            form > <
-            NotificationContainer / > < /Block ></div > ): ( < ToasterContainer > <
-            ContractLoader name = "Clinical Trial"
-            onLoad = {
-                ({ api, contract }) => {
-                    setApi(api)
-                    setContract(contract)
-                }
-            }
-            />< /ToasterContainer >
-        )
+    } > Show Result < /Button > <
+    Modal onClose = { close }
+    isOpen = { isOpen } >
+        <
+        ModalHeader > Statistical Test Result < /ModalHeader> <
+    ModalBody > { gottenResult ? buttonText.true : buttonText.false } <
+        /ModalBody> <
+    ModalFooter >
+        <
+        ModalButton onClick = { close } > Unshow Result < /ModalButton> < /
+    ModalFooter > <
+        /Modal>< /ButtonGroup > < /
+    form > <
+        NotificationContainer / > < /Block ></div > ): ( < ToasterContainer > <
+    ContractLoader name = "Clinical Trial"
+    onLoad = {
+        ({ api, contract }) => {
+            setApi(api)
+            setContract(contract)
+        }
     }
-    FormPage.title = 'Trial upload page';
+    />< /ToasterContainer >
+)
+}
+FormPage.title = 'Trial upload page';
