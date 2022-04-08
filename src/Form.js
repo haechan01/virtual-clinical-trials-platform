@@ -125,10 +125,10 @@ export default function FormPage() {
                     // download present raw data
                     const downloaded_preprocessed = await contract.query.downloadPreprocessed(certificate, {})
                     console.log(downloaded_preprocessed.output.toHuman())
-                    // NotificationManager.success('Preprocessed Data downloaded successfully', 'Preprocessed Data Download');
+                    NotificationManager.success('Preprocessed Data downloaded successfully', 'Preprocessed Data Download');
                 } catch (e) {
                     console.log(e);
-                    // NotificationManager.error('Preprocessed Data failed to download', 'Failed Data Download', 10000);
+                    NotificationManager.error('Preprocessed Data failed to download', 'Failed Data Download', 10000);
                 }
 
             } catch (err) {
