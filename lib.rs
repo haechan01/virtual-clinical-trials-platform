@@ -186,7 +186,12 @@ mod clinical_trial_data {
 
         // calculates factorial iteratively
         pub fn factorial(&self, num: u128) -> u128 {
-            (1..=num).fold(1, |acc, v| acc * v)
+            if num == 0 {
+                1
+            }
+            else{
+                (1..=num).fold(1, |acc, v| acc * v)
+            }
         }
         
         // calculates fisher's exact test formulaically
@@ -197,8 +202,8 @@ mod clinical_trial_data {
         // calculates p-value using hypergeometric distribution in fisher's exact test
         pub fn hypergeom_cdf(&self, population: u128, cured: u128, treatment: u128, mut observed: u128) -> u128 {
             let mut hypergeom_sum: u128 = 0;
-            while observed <= cured{
-                hypergeom_sum += self.binomial(cured, observed) * self.binomial(population-cured, treatment-observed);
+            while observed <= cured && observed <= treatment{
+                hypergeom_sum += self.binomial(cured, observed)*self.binomial(population-cured, treatment-observed);
                 observed += 1;
             }
             hypergeom_sum
