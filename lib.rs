@@ -5,26 +5,28 @@ use ink_lang as ink;
 #[ink::contract]
 mod clinical_trial_data {
 
+    // import ink data structures
     use ink_prelude::string::String; 
     use ink_prelude::vec::Vec;
+    use ink_prelude::vec; 
     use ink_storage::Mapping;
     use ink_storage::traits::SpreadAllocate;
-    use ink_prelude::vec; 
 
     #[ink(storage)]
     #[derive(SpreadAllocate)]
     pub struct ClinicalTrialData {
 
         // data
-        raw_records: Vec<(String, String, String)>, // Vec[("1", "Treatment", "Positive"), ("2", "Placebo", "Negative"), ...]
-        preprocessed_records: Vec<(String, String, String)>,
+        raw_records: Vec<(String, String, String)>, // [("1", "Treatment", "Positive"), ("2", "Placebo", "Negative"), ...]
+        preprocessed_records: Vec<(String, String, String)>, // [("1", "Treatment", "Positive"), ("2", "Placebo", "Negative"), ...]
         data_summary: Mapping<String, u128>, // {'Treatment Positive': 3, 'Treatment Negative': 385, 'Placebo Positive': 28, 'Placebo Negative': 358}
 
         // study characteristics
-        p_thresh: u128, // i.e. ink doesn't allow for float, use significant figure multiplier method
-        stat_test: String, // i.e. fishers_exact_test
-        result: bool, // true for significant result, i.e. < p-value, false for insignificant, i.e. > p-value
-        p_value: Vec<u128> // resulting p   
+        p_thresh: u128, // p-value threshold
+        stat_test: String, // e.g. fishers_exact_test
+        p_value: Vec<u128> // [nominator, denominator], compute resulting p-value in frontend = nominator/denominator
+        result: bool, // true for significant result, i.e. p_value < p_thresh, otherwise false
+          
     }
 
     impl ClinicalTrialData {
@@ -33,6 +35,7 @@ mod clinical_trial_data {
         #[ink(constructor)] 
         pub fn new(custom_p_thresh: u128, custom_stat_test: String) -> Self {
 
+            // to initialize ink_storage::Mapping
             ink_lang::utils::initialize_contract(|contract: &mut Self| {
                 contract.p_thresh = custom_p_thresh;
                 contract.stat_test = custom_stat_test;
@@ -43,6 +46,7 @@ mod clinical_trial_data {
         #[ink(constructor)]
         pub fn default() -> Self {
 
+            // to initialize ink_storage::Mapping
             ink_lang::utils::initialize_contract(|contract: &mut Self| {
                 contract.result = false;
                 contract.p_thresh = 5;
@@ -56,25 +60,25 @@ mod clinical_trial_data {
             self.p_thresh = p;
         }
 
-        // gets the p-value of the ClinicalTrialData contract
+        // gets the stat test of the ClinicalTrialData contract
         #[ink(message)]
         pub fn set_stat_test(&mut self, stat_test: String) {
             self.stat_test = stat_test;
         }
 
-        // gets the p-value of the ClinicalTrialData contract
+        // gets the p-threshold of the ClinicalTrialData contract
         #[ink(message)]
         pub fn get_p_thresh(&self) -> u128 {
             self.p_thresh
         }
 
-        // gets the statistical test of the ClinicalTrialData contract
+        // gets the stat test of the ClinicalTrialData contract
         #[ink(message)]
         pub fn get_stat_test(&self) -> String {
             self.stat_test.clone()
         }
 
-        // uploads records to contract storage from frontend with a whole array
+        // uploads raw records to contract storage from frontend with a whole array, use createApiType in frontend
         #[ink(message)]
         pub fn upload_all_raw(&mut self, records: Vec<(String, String, String)>) {
             for record in records {
@@ -82,7 +86,7 @@ mod clinical_trial_data {
             }
         }
 
-        // uploads records to contract storage from frontend one-by-one
+        // uploads raw records to contract storage from frontend one-by-one
         #[ink(message)]
         pub fn upload_one_raw(&mut self, patient_id: String, group: String, outcome: String) {
 
@@ -90,25 +94,25 @@ mod clinical_trial_data {
             self.raw_records.push(record);
         }
 
-        // returns records from contract storage to frontend (access: contract owner, i.e. researcher)
+        // returns raw records from contract storage to frontend
         #[ink(message)]
         pub fn download_raw(&self) -> Vec<(String, String, String)>{
             self.raw_records.clone()
         }
 
-        // returns records from contract storage to frontend (access: contract owner, i.e. researcher)
+        // returns preprocessed records from contract storage to frontend
         #[ink(message)]
         pub fn download_preprocessed(&self) -> Vec<(String, String, String)>{
             self.preprocessed_records.clone()
         }
 
-        // returns records from contract storage to frontend (access: contract owner, i.e. researcher)
+        // clears raw records in contract storage
         #[ink(message)]
         pub fn clear_raw(&mut self) {
             self.raw_records.clear();
         }
 
-        // returns records from contract storage to frontend (access: contract owner, i.e. researcher)
+        // clears preprocessed records in contract storage
         #[ink(message)]
         pub fn clear_preprocessed(&mut self) {
             self.preprocessed_records.clear();
@@ -138,13 +142,13 @@ mod clinical_trial_data {
             self.run_stat_test();
         }
 
-        // gets result; true = significant, otherwise false
+        // gets result
         #[ink(message)]
         pub fn get_result(&self) -> bool {
             self.result
         }
 
-        // gets p-value result
+        // gets p-value
         #[ink(message)]
         pub fn get_p_value(&self) -> Vec<u128> {
             self.p_value.clone()
@@ -203,7 +207,7 @@ mod clinical_trial_data {
         pub fn hypergeom_cdf(&self, population: u128, cured: u128, treatment: u128, observed: u128) -> u128 {
             let mut hypergeom_sum: u128 = 0;
             while observed <= cured && observed <= treatment{
-                hypergeom_sum += self.binomial(cured, observed)*self.binomial(population-cured, treatment-observed);
+                hypergeom_sum += self.binomial(cured, observed) * self.binomial(population-cured, treatment-observed);
                 observed += 1;
             }
             hypergeom_sum
@@ -224,9 +228,9 @@ mod clinical_trial_data {
             let treatment = treatment_pos + treatment_neg;
             let observed = treatment_pos; 
 
-            // significant figure multiplier
+            // 3. significant figure multiplier
             let scalar: u128 = 100; // significant figure multiplier
-            let scaled_p: u128 = self.p_thresh * self.binomial(population, treatment); // since self.p_thresh = 5 is already scaled by 100 from 0.05
+            let scaled_p: u128 = self.p_thresh * self.binomial(population, treatment); 
             let mut scaled_right_cdf: u128 = self.hypergeom_cdf(population, cured, treatment, observed);
             if scaled_right_cdf > self.binomial(population, treatment)/2 {
                 scaled_right_cdf = self.binomial(population, treatment) - scaled_right_cdf;
@@ -239,6 +243,7 @@ mod clinical_trial_data {
         }
     }
 
+    // off-chain unit tests for ClinicalTrialData contract
     #[cfg(test)]
     mod tests {
         
