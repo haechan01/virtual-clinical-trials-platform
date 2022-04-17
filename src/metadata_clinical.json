@@ -1,0 +1,515 @@
+{
+  "source": {
+    "hash": "0xc0ba1f5dc51106eb0b47090282e7274454fa337b43b8540c247df9c79fd64178",
+    "language": "ink! 3.0.0",
+    "compiler": "rustc 1.61.0-nightly"
+  },
+  "contract": {
+    "name": "clinical_trial",
+    "version": "0.1.0",
+    "authors": [
+      "[your_name] <[your_email]>"
+    ]
+  },
+  "V3": {
+    "spec": {
+      "constructors": [
+        {
+          "args": [
+            {
+              "label": "custom_p_thresh",
+              "type": {
+                "displayName": [
+                  "u128"
+                ],
+                "type": 4
+              }
+            },
+            {
+              "label": "custom_stat_test",
+              "type": {
+                "displayName": [
+                  "String"
+                ],
+                "type": 2
+              }
+            }
+          ],
+          "docs": [],
+          "label": "new",
+          "payable": false,
+          "selector": "0x9bae9d5e"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "default",
+          "payable": false,
+          "selector": "0xed4b9d1b"
+        }
+      ],
+      "docs": [],
+      "events": [],
+      "messages": [
+        {
+          "args": [
+            {
+              "label": "p",
+              "type": {
+                "displayName": [
+                  "u128"
+                ],
+                "type": 4
+              }
+            }
+          ],
+          "docs": [],
+          "label": "set_p_thresh",
+          "mutates": true,
+          "payable": false,
+          "returnType": null,
+          "selector": "0x31b55e8a"
+        },
+        {
+          "args": [
+            {
+              "label": "stat_test",
+              "type": {
+                "displayName": [
+                  "String"
+                ],
+                "type": 2
+              }
+            }
+          ],
+          "docs": [],
+          "label": "set_stat_test",
+          "mutates": true,
+          "payable": false,
+          "returnType": null,
+          "selector": "0x835e50e3"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_p_thresh",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "u128"
+            ],
+            "type": 4
+          },
+          "selector": "0xf7a31b15"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_stat_test",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "String"
+            ],
+            "type": 2
+          },
+          "selector": "0xc9cd37f8"
+        },
+        {
+          "args": [
+            {
+              "label": "records",
+              "type": {
+                "displayName": [
+                  "Vec"
+                ],
+                "type": 0
+              }
+            }
+          ],
+          "docs": [],
+          "label": "upload_all_raw",
+          "mutates": true,
+          "payable": false,
+          "returnType": null,
+          "selector": "0xe4100dfb"
+        },
+        {
+          "args": [
+            {
+              "label": "patient_id",
+              "type": {
+                "displayName": [
+                  "String"
+                ],
+                "type": 2
+              }
+            },
+            {
+              "label": "group",
+              "type": {
+                "displayName": [
+                  "String"
+                ],
+                "type": 2
+              }
+            },
+            {
+              "label": "outcome",
+              "type": {
+                "displayName": [
+                  "String"
+                ],
+                "type": 2
+              }
+            }
+          ],
+          "docs": [],
+          "label": "upload_one_raw",
+          "mutates": true,
+          "payable": false,
+          "returnType": null,
+          "selector": "0x2044d776"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "download_raw",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 0
+          },
+          "selector": "0xa09a9c80"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "download_preprocessed",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 0
+          },
+          "selector": "0xb2f69a3b"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "clear_raw",
+          "mutates": true,
+          "payable": false,
+          "returnType": null,
+          "selector": "0x948fcc56"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "clear_preprocessed",
+          "mutates": true,
+          "payable": false,
+          "returnType": null,
+          "selector": "0x388801ed"
+        },
+        {
+          "args": [
+            {
+              "label": "records",
+              "type": {
+                "displayName": [
+                  "Vec"
+                ],
+                "type": 0
+              }
+            }
+          ],
+          "docs": [],
+          "label": "upload_all_preprocessed",
+          "mutates": true,
+          "payable": false,
+          "returnType": null,
+          "selector": "0x94b0cca3"
+        },
+        {
+          "args": [
+            {
+              "label": "patient_id",
+              "type": {
+                "displayName": [
+                  "String"
+                ],
+                "type": 2
+              }
+            },
+            {
+              "label": "group",
+              "type": {
+                "displayName": [
+                  "String"
+                ],
+                "type": 2
+              }
+            },
+            {
+              "label": "outcome",
+              "type": {
+                "displayName": [
+                  "String"
+                ],
+                "type": 2
+              }
+            }
+          ],
+          "docs": [],
+          "label": "upload_one_preprocessed",
+          "mutates": true,
+          "payable": false,
+          "returnType": null,
+          "selector": "0x5139fab6"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "run_on_preprocessed",
+          "mutates": true,
+          "payable": false,
+          "returnType": null,
+          "selector": "0x54fc06c4"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_result",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "bool"
+            ],
+            "type": 8
+          },
+          "selector": "0x0f5724c5"
+        },
+        {
+          "args": [],
+          "docs": [],
+          "label": "get_p_value",
+          "mutates": false,
+          "payable": false,
+          "returnType": {
+            "displayName": [
+              "Vec"
+            ],
+            "type": 9
+          },
+          "selector": "0x91eb9e9f"
+        }
+      ]
+    },
+    "storage": {
+      "struct": {
+        "fields": [
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "ty": 0
+              }
+            },
+            "name": "raw_records"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0100000000000000000000000000000000000000000000000000000000000000",
+                "ty": 0
+              }
+            },
+            "name": "preprocessed_records"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0200000000000000000000000000000000000000000000000000000000000000",
+                "ty": 3
+              }
+            },
+            "name": "data_summary"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0300000000000000000000000000000000000000000000000000000000000000",
+                "ty": 4
+              }
+            },
+            "name": "p_thresh"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0400000000000000000000000000000000000000000000000000000000000000",
+                "ty": 2
+              }
+            },
+            "name": "stat_test"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0500000000000000000000000000000000000000000000000000000000000000",
+                "ty": 8
+              }
+            },
+            "name": "result"
+          },
+          {
+            "layout": {
+              "cell": {
+                "key": "0x0600000000000000000000000000000000000000000000000000000000000000",
+                "ty": 9
+              }
+            },
+            "name": "p_value"
+          }
+        ]
+      }
+    },
+    "types": [
+      {
+        "id": 0,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 1
+            }
+          }
+        }
+      },
+      {
+        "id": 1,
+        "type": {
+          "def": {
+            "tuple": [
+              2,
+              2,
+              2
+            ]
+          }
+        }
+      },
+      {
+        "id": 2,
+        "type": {
+          "def": {
+            "primitive": "str"
+          }
+        }
+      },
+      {
+        "id": 3,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "name": "offset_key",
+                  "type": 5,
+                  "typeName": "Key"
+                }
+              ]
+            }
+          },
+          "params": [
+            {
+              "name": "K",
+              "type": 2
+            },
+            {
+              "name": "V",
+              "type": 4
+            }
+          ],
+          "path": [
+            "ink_storage",
+            "lazy",
+            "mapping",
+            "Mapping"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "type": {
+          "def": {
+            "primitive": "u128"
+          }
+        }
+      },
+      {
+        "id": 5,
+        "type": {
+          "def": {
+            "composite": {
+              "fields": [
+                {
+                  "type": 6,
+                  "typeName": "[u8; 32]"
+                }
+              ]
+            }
+          },
+          "path": [
+            "ink_primitives",
+            "Key"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "type": {
+          "def": {
+            "array": {
+              "len": 32,
+              "type": 7
+            }
+          }
+        }
+      },
+      {
+        "id": 7,
+        "type": {
+          "def": {
+            "primitive": "u8"
+          }
+        }
+      },
+      {
+        "id": 8,
+        "type": {
+          "def": {
+            "primitive": "bool"
+          }
+        }
+      },
+      {
+        "id": 9,
+        "type": {
+          "def": {
+            "sequence": {
+              "type": 4
+            }
+          }
+        }
+      }
+    ]
+  }
+}

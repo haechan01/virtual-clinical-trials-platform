@@ -7,7 +7,7 @@ export const enablePolkadotExtension = async (): Promise<void> => {
 
   enablePolkadotExtensionCache = (async () => {
     const {web3Enable} = await import('@polkadot/extension-dapp')
-    const extensions = await web3Enable('Phala SDK Example')
+    const extensions = await web3Enable('Clinical Trial Example')
     try {
       if (extensions.length === 0) {
         throw new Error(
@@ -28,12 +28,8 @@ export const getSigner = async (
 ): Promise<Signer> => {
   await enablePolkadotExtension()
   const {web3FromSource} = await import('@polkadot/extension-dapp')
-  console.log("web3 from Source works")
-  console.log(account.meta.source)
   const injector = await web3FromSource(account.meta.source)
-  console.log("Account Injector works")
-  const signer = injector.signer
-  console.log("Signer works")
+  const signer = await injector.signer
 
   return signer
 }

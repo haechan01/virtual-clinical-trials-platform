@@ -1,10 +1,8 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import FormPage from './Form.js';
 import Nav from './Nav.js'
-import Resetcontract from './Newcontract.js';
 
 function App() {
 
@@ -22,9 +20,6 @@ function App() {
         /> <
         Route path = "/new-trial"
         element = { < FormPage / > }
-        /> <
-        Route path = "/new-contract-chain"
-        element = { < Resetcontract / > }
         /> < /
         Routes >
         <
@@ -38,11 +33,10 @@ const Home = () => {
         div >
         <
         h1 >
-        Welcome to the Clinical Trial Platform use -
-        case for Phala Networks <
+                        Welcome to the Clinical Trial Data Platform secured by Phala Networks <
         /h1>
-        This is the data upload platform aimed at providing a secure, immutable platform
-        for your clinical services.Click "New Trial"
+                        This is the data upload platform to provide a secure, immutable data framework
+                        for your clinical trial studies. Click "New Trial"
         to get started. < /
         div >
     )

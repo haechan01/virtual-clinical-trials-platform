@@ -5,11 +5,12 @@ import { Button } from 'baseui/button'
 import {Block} from 'baseui/block'
 import { FormControl } from 'baseui/form-control'
 import { Input } from 'baseui/input'
-import { toaster, ToasterContainer } from 'baseui/toast'
+import { toaster} from 'baseui/toast'
 import { useAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { focusAtom } from 'jotai/optics'
 import { useRef, VFC } from "react"
+import ArrowRight from 'baseui/icon/arrow-right';
 import useIsClient from '../hooks/useIsClient.ts'
 import { createApi } from '../lib/polkadotApi.ts'
 
@@ -19,7 +20,7 @@ const endpointAtom = atomWithStorage<string>(
 )
 const pruntimeURLAtom = atomWithStorage<string>(
     'atom:pruntime_url',
-    'https://poc5.phala.network/tee-api-1'
+    'https://poc5.phala.network/tee-api-3'
 )
 const contractsAtom = atomWithStorage<
     Record<string, { contractId: string}>
@@ -35,7 +36,7 @@ const ContractLoader: VFC<{
     const [contractInfo, setContractInfo] = useAtom(contractInfoAtom.current)
     const [endpoint, setEndpoint] = useAtom(endpointAtom)
     const [pruntimeURL, setPruntimeURL] = useAtom(pruntimeURLAtom)
-    const metadata = require('../metadata.json')
+    const metadata = require('../metadata_clinical.json')
     const { contractId = ''} = contractInfo || {}
     const isClient = useIsClient()
     if (!isClient) return null
@@ -73,7 +74,7 @@ const ContractLoader: VFC<{
       </FormControl>
       <FormControl label="Pruntime URL">
         <Input
-          placeholder="https://poc5.phala.network/tee-api-1"
+          placeholder="https://poc5.phala.network/tee-api-3"
           overrides={{
             Input: {
               style: {
@@ -103,7 +104,7 @@ const ContractLoader: VFC<{
           }
         ></Input>
       </FormControl>
-      <Button disabled={!contractId} onClick={loadContract}>
+      <Button endEnhancer={() => <ArrowRight size={24} />} disabled={!contractId} onClick={loadContract}>
         Load Contract
       </Button>
     </Block>
