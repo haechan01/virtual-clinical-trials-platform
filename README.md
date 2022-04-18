@@ -7,6 +7,8 @@ Clinical trials are conducted in more decentralized manners because 1) patient m
 The vision of the use case is to support virtual clinical trials, which collect patient data from multiple geographical locations, and secure its data upload, data aggregation, and significance testing processes on-chain. Read more on the proposal here.
 
 ## Architecture and product
+![](docs/architecture.png)
+
 #### Current state
 1. **The contract can only handle up to 30 patient records [_engineering_]**. Working with data and statistics often involves floating-point numbers and some form of pseudo-random sampling under the hood. However, their non-deterministic nature renders them incompatible, since each node in the network needs to be able to independently execute the smart contract and obtain an identitical output, to preserve the integrity of the state of the virtual machine. Consequently, decimal numbers are treated as scaled integers to preserve a fixed number of significant figures, which are de-scaled in the frontend in an unsecured manner. The current statiscal results are also analytically calculated rather than simulated, which involves larger quantities of factorials that risks integer overflow. Hence, 30 patient records is the maximum that does not cause an overflow in the u128 data type. 
 2. **The contract is currently single-use [_user experience_].** This means it requires a researcher to build, upload, and instantiate the ink contract on his own. However, such process and responsibility should really be carried out by the engineers. It is not ideal because 1) it requires the user extra effort and literacy of contract deployment, and 2) it duplicates the contract code and occupies redundant storage on-chain. 
@@ -19,6 +21,8 @@ The vision of the use case is to support virtual clinical trials, which collect 
 
 ## Interact with the contract 
 - Download the code in your desired directory
+  ```git clone <url>
+  ```
 <code>`git clone <url>`</code>
 - Build the contract in the root directory. The WebAssembly `.wasm` file will appear in `\target\ink`
 <code>`cargo build --release`</code>
@@ -31,7 +35,6 @@ The vision of the use case is to support virtual clinical trials, which collect 
 - Interact!
 
 ## External resources
----
 - Set up Polkadot development accounts
 - Fat Contract tutorial
 - Run a local Phala Blockchain test net tutorial
