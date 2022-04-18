@@ -4,7 +4,7 @@ This use case secures the data progression of clinical trial data, using Phala N
 ## Overview
 Clinical trials are conducted in more decentralized manners because 1) patient mobility is restricted during COVID-19, and 2) a higher patient diversity is demanded to increase the generalizability of results. 
 
-The vision of the use case is to support virtual clinical trials, which collect patient data from multiple geographical locations, and secure its data upload, data aggregation, and significance testing processes on-chain. Read more on the proposal [here] (./docs/proposal.pdf).
+The vision of the use case is to support virtual clinical trials, which collect patient data from multiple geographical locations, and secure its data upload, data aggregation, and significance testing processes on-chain. Read more on the proposal [here](./docs/proposal.pdf).
 
 ## Architecture and product
 ![](./docs/architecture.png)
