@@ -25,13 +25,19 @@ The vision of the use case is to support virtual clinical trials, which collect 
   git clone <url>
   ```
 - Build the contract in the root directory. The WebAssembly `.wasm` file will appear in `\target\ink`
-<code>`cargo build --release`</code>
+  ```
+  cargo build --release
+  ```
 - Upload the WebAssembly code to Phala Network's PoC test net on the Polkadot/Subtrate portal following this tutorial. You should obtain your contract ID
 - Build the Next.js frontend in the root directory
-<code>`npm install`</code>
-<code>`npm build`</code>
+  ```
+  npm install
+  npm build
+  ```
 - Run the frontend and input the contract ID and endpoints 
-<code>`npm start`</code>
+  ```
+  npm start
+  ```
 - Interact!
 
 ## External resources
