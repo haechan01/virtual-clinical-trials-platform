@@ -27,7 +27,7 @@ The vision of the use case is to support virtual clinical trials, which collect 
     <br><br>
     - Currently, the go-to Rust library `statrs` crate uses many floating-point data types and random processes. This is the most scalable way to include more types of statistical tests into our contract. We can either wait for the `no_std ` release of the `statrs` crate, or try revamp the library on our own by first replacing all floating points with the `fixed-point` data type, a pseudo-floating-point that is deterministic at compile time.
     <br><br>
-2 **Implement account verification on the backend to handle multiple clinical trial datasets on a single contract.** 
+2. **Implement account verification on the backend to handle multiple clinical trial datasets on a single contract.** 
     <br><br>
     - With this, the current storage of the full dataset needs to reduce to such as the storage of the hash of the dataset, where the full dataset resides in an external decentralized storage like Arweave. This should be similar to use cases that handle accounts of cryptocurrencies or NFTs, where anagously a single dataset is akin to a single NFT.
     <br><br>
