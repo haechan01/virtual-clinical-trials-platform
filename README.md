@@ -55,7 +55,7 @@ The vision of the use case is to support virtual clinical trials, which collect 
   ```
   npm start
   ```
-6. Interact!
+6. Interact! Here's a [short demo video](https://www.loom.com/share/f4449d23e81545bcabe1085448cc17b0)
 
 ## External resources
 
