@@ -4,7 +4,7 @@ This use case secures the data progression of clinical trial data, using Phala N
 ## Overview
 Clinical trials are conducted in more decentralized manners because 1) patient mobility is restricted during COVID-19, and 2) a higher patient diversity is demanded to increase the generalizability of results. 
 
-The vision of the use case is to support virtual clinical trials, which collect patient data from multiple geographical locations, and secure its data upload, data aggregation, and significance testing processes on-chain. Read more on the proposal here.
+The vision of the use case is to support virtual clinical trials, which collect patient data from multiple geographical locations, and secure its data upload, data aggregation, and significance testing processes on-chain. Read more on the proposal [here] (\docs\proposal.pdf).
 
 ## Architecture and product
 ![](docs/architecture.png)
@@ -33,7 +33,7 @@ The vision of the use case is to support virtual clinical trials, which collect 
     <br><br>
 3. **More investigation is needed on how best to communicate credibly the result to the desired audience.** 
     <br><br>
-    One way to is to make use of Phala Network Fat Contract's HTTP capabilities to sent statistical results directly to the desired website, such as the FDA's homepage or the pharceutical's blog. 
+    - One way to is to make use of Phala Network Fat Contract's HTTP capabilities to sent statistical results directly to the desired website, such as the FDA's homepage or the pharceutical's blog. 
     <br><br>
 
 ## Interact with the contract 
