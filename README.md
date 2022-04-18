@@ -59,8 +59,8 @@ The vision of the use case is to support virtual clinical trials, which collect 
 6. Interact!
 
 ## External resources
+
 - [Set up Polkadot development accounts] (https://wiki.phala.network/en-us/general/applications/01-polkadot-extension/#create-new-account)
 - [Fat Contract tutorial] (https://wiki.phala.network/en-us/build/developer/fat-contract-tutorial/)
 - [Run a local Phala Blockchain test net tutorial] (https://wiki.phala.network/en-us/build/developer/run-a-local-development-network/)
-- [This is an external link to genome.gov] (https://www.genome.gov/)
 
