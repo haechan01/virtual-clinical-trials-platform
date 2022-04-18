@@ -21,9 +21,9 @@ The vision of the use case is to support virtual clinical trials, which collect 
 
 ## Interact with the contract 
 - Download the code in your desired directory
-  ```git clone <url>
   ```
-<code>`git clone <url>`</code>
+  git clone <url>
+  ```
 - Build the contract in the root directory. The WebAssembly `.wasm` file will appear in `\target\ink`
 <code>`cargo build --release`</code>
 - Upload the WebAssembly code to Phala Network's PoC test net on the Polkadot/Subtrate portal following this tutorial. You should obtain your contract ID
