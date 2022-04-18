@@ -46,7 +46,6 @@ The vision of the use case is to support virtual clinical trials, which collect 
   cargo build --release
   ```
 3. Upload the WebAssembly code to Phala Network's PoC test net on the Polkadot/Subtrate portal following this [tutorial] (https://www.youtube.com/watch?v=aZGj4FhkY6A&t=3135s&ab_channel=ParityTechnologies). You should obtain your contract ID
-<br>
 4. Build the Next.js frontend in the root directory
   ```
   npm install
