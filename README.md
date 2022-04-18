@@ -7,7 +7,7 @@ Clinical trials are conducted in more decentralized manners because 1) patient m
 The vision of the use case is to support virtual clinical trials, which collect patient data from multiple geographical locations, and secure its data upload, data aggregation, and significance testing processes on-chain. Read more on the proposal [here](./docs/proposal.pdf).
 
 ## Architecture and product
-![](./docs/architecture.png)
+![](./docs/architecture.jpg)
 ### Current state:
 1. **The contract can only handle up to 30 patient records [_engineering_]**. 
     <br><br>
@@ -45,7 +45,7 @@ The vision of the use case is to support virtual clinical trials, which collect 
   ```
   cargo build --release
   ```
-3. Upload the WebAssembly code to Phala Network's PoC test net on the Polkadot/Subtrate portal following this [tutorial] (https://www.youtube.com/watch?v=aZGj4FhkY6A&t=3135s&ab_channel=ParityTechnologies). You should obtain your contract ID
+3. Upload the WebAssembly code to Phala Network's PoC test net on the Polkadot/Subtrate portal following this [tutorial](https://www.youtube.com/watch?v=aZGj4FhkY6A&t=3135s&ab_channel=ParityTechnologies). You should obtain your contract ID
 4. Build the Next.js frontend in the root directory
   ```
   npm install
@@ -59,7 +59,7 @@ The vision of the use case is to support virtual clinical trials, which collect 
 
 ## External resources
 
-- ![Set up Polkadot development accounts] (https://wiki.phala.network/en-us/general/applications/01-polkadot-extension/#create-new-account)
-- ![Fat Contract tutorial] (https://wiki.phala.network/en-us/build/developer/fat-contract-tutorial/)
-- ![Run a local Phala Blockchain test net tutorial] (https://wiki.phala.network/en-us/build/developer/run-a-local-development-network/)
+- [Set up Polkadot development accounts](https://wiki.phala.network/en-us/general/applications/01-polkadot-extension/#create-new-account)
+- [Fat Contract tutorial](https://wiki.phala.network/en-us/build/developer/fat-contract-tutorial/)
+- [Run a local Phala Blockchain test net tutorial](https://wiki.phala.network/en-us/build/developer/run-a-local-development-network/)
 
