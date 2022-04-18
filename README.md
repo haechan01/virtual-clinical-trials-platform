@@ -1,72 +1,41 @@
-# Getting Started with Create React App
+## Clinical Trial Data Use Case
+---
+This use case secures the data progression of clinical trial data, using Phala Network's Fat Contract framework to deploy an ink! smart contract that 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
+---
+Clinical trials are conducted in more decentralized manners because 1) patient mobility is restricted during COVID-19, and 2) a higher patient diversity is demanded to increase the generalizability of results. 
 
-## Available Scripts
+The vision of the use case is to support virtual clinical trials, which collect patient data from multiple geographical locations, and secure its data upload, data aggregation, and significance testing processes on-chain. Read more on the proposal here.
 
-In the project directory before you start, you can run:
+### Architecture and product
+---
+##### Current state
+1. **The contract can only handle up to 30 patient records [_engineering_]**. Working with data and statistics often involves floating-point numbers and some form of pseudo-random sampling under the hood. However, their non-deterministic nature renders them incompatible, since each node in the network needs to be able to independently execute the smart contract and obtain an identitical output, to preserve the integrity of the state of the virtual machine. Consequently, decimal numbers are treated as scaled integers to preserve a fixed number of significant figures, which are de-scaled in the frontend in an unsecured manner. The current statiscal results are also analytically calculated rather than simulated, which involves larger quantities of factorials that risks integer overflow. Hence, 30 patient records is the maximum that does not cause an overflow in the u128 data type. 
+2. **The contract is currently single-use [_user experience_].** This means it requires a researcher to build, upload, and instantiate the ink contract on his own. However, such process and responsibility should really be carried out by the engineers. It is not ideal because 1) it requires the user extra effort and literacy of contract deployment, and 2) it duplicates the contract code and occupies redundant storage on-chain. 
+3. **The statistical result is not credibly displayed [_user experience_].** Currently, the statistical significance of the data is displayed as a pop-up on the frontend and requires the researcher to do some form of copy-and-paste on the frontend to a journal article, pharmaceutical company website, company report, et cetera. 
 
-### `npm install`
+##### Goal state
+1. Use a Rust crate that works with statistics and probability distributions and implements a `no_std` version. Currently, the go-to Rust library `statrs` crate uses many floating-point data types and random processes. This is the most scalable way to include more types of statistical tests into our contract. We can either wait for the `no_std ` release of the `statrs` crate, or try revamp the library on our own by first replacing all floating points with the `fixed-point` data type, a pseudo-floating-point that is deterministic at compile time.
+2. Implement account verification on the backend to handle multiple clinical trial datasets on a single contract. With this, the current storage of the full dataset needs to reduce to such as the storage of the hash of the dataset, where the full dataset resides in an external decentralized storage like Arweave. This should be similar to use cases that handle accounts of cryptocurrencies or NFTs, where anagously a single dataset is akin to a single NFT.
+3. More investigation is needed on how best to communicate credibly the result to the desired audience. One way to is to make use of Phala Network Fat Contract's HTTP capabilities to sent statistical results directly to the desired website, such as the FDA's homepage or the pharceutical's blog. 
 
-### `npm run start`
+### Interact with the contract 
+---
+- Download the code in your desired directory
+<code>`git clone <url>`</code>
+- Build the contract in the root directory. The WebAssembly `.wasm` file will appear in `\target\ink`
+<code>`cargo build --release`</code>
+- Upload the WebAssembly code to Phala Network's PoC test net on the Polkadot/Subtrate portal following this tutorial. You should obtain your contract ID
+- Build the Next.js frontend in the root directory
+<code>`npm install`</code>
+<code>`npm build`</code>
+- Run the frontend and input the contract ID and endpoints 
+<code>`npm start`</code>
+- Interact!
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### External resources
+---
+- Set up Polkadot development accounts
+- Fat Contract tutorial
+- Run a local Phala Blockchain test net tutorial
