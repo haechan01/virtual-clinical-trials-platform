@@ -23,9 +23,18 @@ The vision of the use case is to support virtual clinical trials, which collect 
     <br><br>
 
 #### Goal state
-1. Use a Rust crate that works with statistics and probability distributions and implements a `no_std` version. Currently, the go-to Rust library `statrs` crate uses many floating-point data types and random processes. This is the most scalable way to include more types of statistical tests into our contract. We can either wait for the `no_std ` release of the `statrs` crate, or try revamp the library on our own by first replacing all floating points with the `fixed-point` data type, a pseudo-floating-point that is deterministic at compile time.
-2. Implement account verification on the backend to handle multiple clinical trial datasets on a single contract. With this, the current storage of the full dataset needs to reduce to such as the storage of the hash of the dataset, where the full dataset resides in an external decentralized storage like Arweave. This should be similar to use cases that handle accounts of cryptocurrencies or NFTs, where anagously a single dataset is akin to a single NFT.
-3. More investigation is needed on how best to communicate credibly the result to the desired audience. One way to is to make use of Phala Network Fat Contract's HTTP capabilities to sent statistical results directly to the desired website, such as the FDA's homepage or the pharceutical's blog. 
+1. **Use a Rust crate that works with statistics and probability distributions and implements a `no_std` version.** 
+    <br><br>
+    - Currently, the go-to Rust library `statrs` crate uses many floating-point data types and random processes. This is the most scalable way to include more types of statistical tests into our contract. We can either wait for the `no_std ` release of the `statrs` crate, or try revamp the library on our own by first replacing all floating points with the `fixed-point` data type, a pseudo-floating-point that is deterministic at compile time.
+    <br><br>
+2 **Implement account verification on the backend to handle multiple clinical trial datasets on a single contract.** 
+    <br><br>
+    - With this, the current storage of the full dataset needs to reduce to such as the storage of the hash of the dataset, where the full dataset resides in an external decentralized storage like Arweave. This should be similar to use cases that handle accounts of cryptocurrencies or NFTs, where anagously a single dataset is akin to a single NFT.
+    <br><br>
+3. **More investigation is needed on how best to communicate credibly the result to the desired audience.** 
+    <br><br>
+    One way to is to make use of Phala Network Fat Contract's HTTP capabilities to sent statistical results directly to the desired website, such as the FDA's homepage or the pharceutical's blog. 
+    <br><br>
 
 ## Interact with the contract 
 - Download the code in your desired directory
