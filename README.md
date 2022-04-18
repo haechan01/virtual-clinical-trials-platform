@@ -4,10 +4,10 @@ This use case secures the data progression of clinical trial data, using Phala N
 ## Overview
 Clinical trials are conducted in more decentralized manners because 1) patient mobility is restricted during COVID-19, and 2) a higher patient diversity is demanded to increase the generalizability of results. 
 
-The vision of the use case is to support virtual clinical trials, which collect patient data from multiple geographical locations, and secure its data upload, data aggregation, and significance testing processes on-chain. Read more on the proposal [here] (/docs/proposal.pdf).
+The vision of the use case is to support virtual clinical trials, which collect patient data from multiple geographical locations, and secure its data upload, data aggregation, and significance testing processes on-chain. Read more on the proposal [here] (./docs/proposal.pdf).
 
 ## Architecture and product
-![](/docs/architecture.png)
+![](./docs/architecture.png)
 ### Current state:
 1. **The contract can only handle up to 30 patient records [_engineering_]**. 
     <br><br>
@@ -59,7 +59,7 @@ The vision of the use case is to support virtual clinical trials, which collect 
 
 ## External resources
 
-- [Set up Polkadot development accounts] (https://wiki.phala.network/en-us/general/applications/01-polkadot-extension/#create-new-account)
-- [Fat Contract tutorial] (https://wiki.phala.network/en-us/build/developer/fat-contract-tutorial/)
-- [Run a local Phala Blockchain test net tutorial] (https://wiki.phala.network/en-us/build/developer/run-a-local-development-network/)
+- ![Set up Polkadot development accounts] (https://wiki.phala.network/en-us/general/applications/01-polkadot-extension/#create-new-account)
+- ![Fat Contract tutorial] (https://wiki.phala.network/en-us/build/developer/fat-contract-tutorial/)
+- ![Run a local Phala Blockchain test net tutorial] (https://wiki.phala.network/en-us/build/developer/run-a-local-development-network/)
 
