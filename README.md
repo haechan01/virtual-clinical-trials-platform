@@ -1,5 +1,5 @@
 ## Clinical Trial Data Use Case
-This use case secures the data progression of clinical trial data, using Phala Network's Fat Contract framework to deploy an ink! smart contract. 
+This use case secures the data progression of clinical trial data, using Phala Network's Phat Contract framework to deploy an ink! smart contract. 
 
 ## Overview
 Clinical trials are conducted in more decentralized manners because 1) patient mobility is restricted during COVID-19, and 2) a higher patient diversity is demanded to increase the generalizability of results. 
@@ -33,7 +33,7 @@ The vision of the use case is to support virtual clinical trials, which collect 
     <br><br>
 3. **More investigation is needed on how best to communicate credibly the result to the desired audience.** 
     <br><br>
-    - One way to is to make use of Phala Network Fat Contract's HTTP capabilities to sent statistical results directly to the desired website, such as the FDA's homepage or the pharceutical's blog. 
+    - One way to is to make use of Phala Network Phat Contract's HTTP capabilities to sent statistical results directly to the desired website, such as the FDA's homepage or the pharceutical's blog. 
     <br><br>
 
 ## Interact with the contract 
@@ -60,6 +60,6 @@ The vision of the use case is to support virtual clinical trials, which collect 
 ## External resources
 
 - [Set up Polkadot development accounts](https://wiki.phala.network/en-us/general/applications/01-polkadot-extension/#create-new-account)
-- [Fat Contract tutorial](https://wiki.phala.network/en-us/build/developer/fat-contract-tutorial/)
+- [Phat Contract tutorial](https://wiki.phala.network/en-us/build/developer/Phat-contract-tutorial/)
 - [Run a local Phala Blockchain test net tutorial](https://wiki.phala.network/en-us/build/developer/run-a-local-development-network/)
 
